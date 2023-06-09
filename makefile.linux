@@ -1,0 +1,58 @@
+# chN_eN Makefile for Linux (x86_64, arm64)
+# Please run build.linux.{arch} instead of using this Makefile directly.
+
+CPP = aarch64-unknown-linux-gnu-g++ -D__DEBUG__
+CC = aarch64-unknown-linux-gnu-gcc -D__DEBUG__
+LDLIBS =
+CPPFLAGS = -Wall -Wextra -pedantic -pg -g3 -Os -flto -save-temps -std=gnu++23 -fdiagnostics-color=always
+INCS =
+CONV_LIBS =
+CONV_INCS =
+RM = rm -rfv
+
+X86_64 = -march=x86-64
+X86_64_BIN = bin/x86_64/chN_eN
+X86_64_OBJ = obj/x86_64/main.o
+
+ARM64 = -march=armv8-a
+ARM64_BIN = bin/arm64/chN_eN
+ARM64_OBJ = obj/arm64/main.o
+
+#.PHONY: all all-before all-after clean clean-custom x86_64 arm64
+
+all: all-before (X86_64_BIN) (X86_64_OBJ) (ARM64_BIN) (ARM64_OBJ) all-after
+
+clean: clean-custom
+	${RM} $(X86_64_BIN) $(X86_64_OBJ) $(ARM64_BIN) $(ARM64_OBJ)
+
+x86_64:
+	mkdir -p bin
+	mkdir -p bin/x86_64
+	mkdir -p obj
+	mkdir -p obj/x86_64
+	$(CPP) -c src/main.cpp -o obj/x86_64/main.o $(CPPFLAGS) $(X86_64) $(INCS) $(CONV_LIBS) $(CONV_INCS) $(LDLIBS)
+	$(CPP) $(X86_64_OBJ) -o $(X86_64_BIN) $(LDLIBS)
+
+x86_64_conv:
+	mkdir -p bin
+	mkdir -p bin/x86_64
+	mkdir -p obj
+	mkdir -p obj/x86_64
+	$(CPP) -c src/main.cpp -o obj/x86_64/main.o $(CPPFLAGS) $(X86_64) $(INCS) $(CONV_LIBS) $(CONV_INCS) $(LDLIBS)
+	$(CPP) $(X86_64_OBJ) -o $(X86_64_BIN) $(CONV_LIBS) $(CONV_INCS) $(LDLIBS)
+
+arm64:
+	mkdir -p bin
+	mkdir -p bin/arm64
+	mkdir -p obj
+	mkdir -p obj/arm64
+	$(CPP) -c src/main.cpp -o obj/arm64/main.o $(CPPFLAGS) $(ARM64) $(INCS) $(LDLIBS)
+	$(CPP) $(ARM64_OBJ) -o $(ARM64_BIN) $(LDLIBS)
+
+arm64_conv:
+	mkdir -p bin
+	mkdir -p bin/arm64
+	mkdir -p obj
+	mkdir -p obj/arm64
+	$(CPP) -c src/main.cpp -o obj/arm64/main.o $(CPPFLAGS) $(ARM64) $(INCS) $(CONV_LIBS) $(CONV_INCS) $(LDLIBS)
+	$(CPP) $(ARM64_OBJ) -o $(ARM64_BIN) $(CONV_LIBS) $(CONV_INCS) $(LDLIBS)

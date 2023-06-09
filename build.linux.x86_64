@@ -1,0 +1,7 @@
+# Build script for chN_eN on Linux (x86_64)
+export RBDIR=$(pwd) # RBDIR = Root Build DIRectory
+
+cd $RBDIR # Now we'll build chN_eN
+make -f makefile.linux x86_64_conv # Go!
+
+printf "\n\nDone.\n" # Done.

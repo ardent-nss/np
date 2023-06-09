@@ -1,0 +1,51 @@
+# np: New C++ Project creation script
+
+printf("Please keep your project name short, and do not include any spaces or special characters other than underscores, just to be safe.\n")
+read -p "Project name: " NAME
+
+export RDIR=$(pwd) # Root DIRectory
+
+mkdir -p $NAME/src
+cp template.cpp $NAME/src/main.cpp
+cp makefile.linux $NAME/makefile.linux
+cp build.linux.arm64 $NAME/build.linux.arm64
+cp build.linux.x86_64 $NAME/build.linux.x86_64
+
+cd $NAME # Time to get our hands dirty
+
+# F&R stuff so it makes more sense
+sed -i -u "s/np_projectname/$NAME/g" makefile.linux
+sed -i -u "s/np_projectname/$NAME/g" build.linux.arm64
+sed -i -u "s/np_projectname/$NAME/g" build.linux.x86_64
+
+# Now the hard part :/
+cd $RDIR
+
+cp tt.json tt_tmp.json
+sed -i -u "s/np_projectname/$NAME/g" tt_tmp.json
+mv tt_tmp.json .vscode/tt_tmp.json
+
+cp cnf.json cnf_tmp.json
+sed -i -u "s/np_projectname/$NAME/g" cnf_tmp.json
+mv cnf_tmp.json .vscode/cnf_tmp.json
+
+cd .vscode
+export NL=$(wc -l < tasks.json)
+export NLR=$(($NL-1)) # This is not as funky as it looks, it's just subtracting 1 from $NL
+sed -i -u "$NLR s/$/,/" tasks.json
+sed -i -u "$NLR rtt_tmp.json" tasks.json
+rm tt_tmp.json
+
+export LNL=$(wc -l < launch.json)
+export LNLR=$(($LNL-1)) # Same funky code from line 35
+sed -i -u "$LNLR s/$/,/" launch.json
+sed -i -u "$LNLR rcnf_tmp.json" launch.json
+rm cnf_tmp.json
+
+cd $RDIR # Almost done.
+
+echo >> .gitignore # Append newline to .gitignore
+echo $NAME/bin/* >> .gitignore # Add build residues
+echo $NAME/obj/* >> .gitignore # to the .gitignore
+
+# Done!
