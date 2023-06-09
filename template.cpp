@@ -4,7 +4,7 @@
 #include <iostream> //Console streams (essential)
 
 int main(int argc, char *argv[]) {
-  //figure out how to hack into the fbi's nude collection here
+  //figure out how to 
 
   return 0;
 }

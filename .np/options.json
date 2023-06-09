@@ -1,0 +1,16 @@
+{
+  "projectname": "cpp_project",
+  "rootdir": "np/",
+  "mainsrcname": "main.cpp",
+  "stdversion": "c++23",
+  "configurations": [
+    {
+      "os": "linux",
+      "arch": "x86_64",
+      ""
+    }
+  ],
+
+  "vscodeintegration": true,
+  "vscodefolder": ".vscode"
+}
