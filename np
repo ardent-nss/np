@@ -9,7 +9,8 @@ xit() {
 }
 
 create_new_project() {
-  printf "\billnye"
+  printf "\n\n"
+  xit
 }
 
 regenerate_buildscript() {
