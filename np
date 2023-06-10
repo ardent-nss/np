@@ -3,20 +3,6 @@
 
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
-J=<<JSONA
-ewogICJwcm9qZWN0bmFtZSI6ICIqbnBfbmFtZSIsCiAgInN0ZHZlcnNpb24iOiAiKm5wX3N0ZHZl
-ciIsCiAgImNvbmZpZ3VyYXRpb25zIjogWwogICAgewogICAgICAiY29uZmlnbmFtZSI6ICIqbnBf
-Y29uZm5hbWUiLAogICAgICAib3MiOiAiKm5wX29zIiwKICAgICAgImFyY2giOiAiKm5wX2FyY2gi
-LAogICAgICAiZ2NjIjogIipucF9nY2MiLAogICAgICAiZysrIjogIipucF9ncHAiLAogICAgICAi
-Y29tcGlsZXJhcmdzIjogWwogICAgICAgICIqbnBfYXJncyIKICAgICAgXSwKICAgICAgInNvdXJj
-ZWZpbGVzIjogWwogICAgICAgICIqbnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJjaW5jbHVk
-ZWRpcnMiOiBbCiAgICAgICAgIipucF9jaW5jcyIKICAgICAgXSwKICAgICAgImNwcGluY2x1ZGVk
-aXJzIjogWwogICAgICAgICIqbnBfY3BwaW5jcyIKICAgICAgXSwKICAgICAgImxpYmRpcnMiOiBb
-CiAgICAgICAgIipucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRsaWJzIjogWwogICAgICAg
-ICIqbnBfbGRsaWJzIgogICAgICBdCiAgICB9CiAgXSwKICAidnNjb2RlaW50ZWdyYXRpb24iOiAq
-bnBfdnNjdHJmLAogICJ2c2NvZGVmb2xkZXIiOiAiKm5wX3ZzY2YiCn0=
-JSONA
-
 xit() {
   printf "\033[0m"
   exit 0
@@ -29,6 +15,11 @@ create_new_project() {
 regenerate_buildscript() {
   printf "\nthis is not what it sounds like\n"
   xit
+}
+
+extract_project_json() {
+  output=$(sed -n "/&#123 __BEGIN_PROJECT_JSON__/,/} __END_PROJECT_JSON__/p" np) # Read the file and extract the project.json file
+  echo "$output" >> .np/project.json # Write it to disk
 }
 
 if [ -f "$rootdir/.np/project.json" ]; then
@@ -46,9 +37,44 @@ fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\n"
   mkdir -p .np
-  echo $J | base64 -d > .np/project.json
+  extract_project_json
   xit
 fi
 
 printf "\033[0m"
 exit 0
+
+# This is the default project.json file that will be written to disk (never touched by shell)
+{ __BEGIN_PROJECT_JSON__
+  "projectname": "*np_name",
+  "stdversion": "*np_stdver",
+  "configurations": [
+    {
+      "configname": "*np_confname",
+      "os": "*np_os",
+      "arch": "*np_arch",
+      "gcc": "*np_gcc",
+      "g++": "*np_gpp",
+      "compilerargs": [
+        "*np_args"
+      ],
+      "sourcefiles": [
+        "*np_srcfiles"
+      ],
+      "cincludedirs": [
+        "*np_cincs"
+      ],
+      "cppincludedirs": [
+        "*np_cppincs"
+      ],
+      "libdirs": [
+        "*np_libdirs"
+      ],
+      "ldlibs": [
+        "*np_ldlibs"
+      ]
+    }
+  ],
+  "vscodeintegration": *np_vsctrf,
+  "vscodefolder": "*np_vscf"
+} __END_PROJECT_JSON__
