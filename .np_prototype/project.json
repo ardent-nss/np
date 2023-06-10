@@ -1,72 +1,33 @@
 {
-  "projectname": "cpp_project",
-  "stdversion": "gnu++23",
+  "projectname": "*np_name",
+  "stdversion": "*np_stdver",
   "configurations": [
     {
-      "configname": "cpp_project_la64",
-      "os": "linux",
-      "arch": "arm64",
-      "gcc": "gcc",
-      "g++": "g++",
+      "configname": "*np_confname",
+      "os": "*np_os",
+      "arch": "*np_arch",
+      "gcc": "*np_gcc",
+      "g++": "*np_gpp",
       "compilerargs": [
-        "-Wall",
-        "-Wextra",
-        "-pedantic"
+        "*np_args"
       ],
       "sourcefiles": [
-        "src/main.cpp",
-        "src/physics.cpp"
+        "*np_srcfiles"
       ],
       "cincludedirs": [
-        "/usr/local/include/c++/13.1.1/",
-        "/some/funny/looking/path/include"
+        "*np_cincs"
       ],
       "cppincludedirs": [
-        "/usr/local/include/c++/13.1.1/",
-        "/some/funny/looking/path/include"
+        "*np_cppincs"
       ],
       "libdirs": [
-        "/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1",
-        "/some/funny/looking/path/lib"
+        "*np_libdirs"
       ],
       "ldlibs": [
-        "-lglfw3",
-        "-lopengl32"
-      ]
-    },
-    {
-      "configname": "cpp_project_lx64",
-      "os": "linux",
-      "arch": "x86_64",
-      "gcc": "gcc",
-      "g++": "g++",
-      "compilerargs": [
-        "-Wall",
-        "-Wextra",
-        "-pedantic"
-      ],
-      "sourcefiles": [
-        "src/main.cpp",
-        "src/physics.cpp"
-      ],
-      "cincludedirs": [
-        "/usr/local/include/c++/13.1.1/",
-        "/some/funny/looking/path/include"
-      ],
-      "cppincludedirs": [
-        "/usr/local/include/c++/13.1.1/",
-        "/some/funny/looking/path/include"
-      ],
-      "libdirs": [
-        "/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1",
-        "/some/funny/looking/path/lib"
-      ],
-      "ldlibs": [
-        "-lglfw3",
-        "-lopengl32"
+        "*np_ldlibs"
       ]
     }
   ],
-  "vscodeintegration": true,
-  "vscodefolder": ".vscode"
+  "vscodeintegration": *np_vsctrf,
+  "vscodefolder": "*np_vscf"
 }

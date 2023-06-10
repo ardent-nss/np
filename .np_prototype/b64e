@@ -1,9 +1,3 @@
-#!/bin/bash
-#  np: New Project C/C++ build system
-
-rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
-
-J=<<JSONA
 ewogICJwcm9qZWN0bmFtZSI6ICIqbnBfbmFtZSIsCiAgInN0ZHZlcnNpb24iOiAiKm5wX3N0ZHZl
 ciIsCiAgImNvbmZpZ3VyYXRpb25zIjogWwogICAgewogICAgICAiY29uZmlnbmFtZSI6ICIqbnBf
 Y29uZm5hbWUiLAogICAgICAib3MiOiAiKm5wX29zIiwKICAgICAgImFyY2giOiAiKm5wX2FyY2gi
@@ -15,40 +9,3 @@ aXJzIjogWwogICAgICAgICIqbnBfY3BwaW5jcyIKICAgICAgXSwKICAgICAgImxpYmRpcnMiOiBb
 CiAgICAgICAgIipucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRsaWJzIjogWwogICAgICAg
 ICIqbnBfbGRsaWJzIgogICAgICBdCiAgICB9CiAgXSwKICAidnNjb2RlaW50ZWdyYXRpb24iOiAq
 bnBfdnNjdHJmLAogICJ2c2NvZGVmb2xkZXIiOiAiKm5wX3ZzY2YiCn0=
-JSONA
-
-xit() {
-  printf "\033[0m"
-  exit 0
-}
-
-create_new_project() {
-  xit
-}
-
-regenerate_buildscript() {
-  printf "\nthis is not what it sounds like\n"
-  xit
-}
-
-if [ -f "$rootdir/.np/project.json" ]; then
-  printf "Regenerating build script...\n"
-  regenerate_buildscript
-  xit
-fi
-
-printf "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
-read -p "" -n 1 -r
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-  printf "\nThen why did you launch this script???\n"
-  xit
-fi
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  printf "\n\n"
-  mkdir -p .np
-  echo $J | base64 -d > .np/project.json
-  xit
-fi
-
-printf "\033[0m"
-exit 0
