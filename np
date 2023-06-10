@@ -6,12 +6,14 @@ rootdir=$(pwd) # Current root directory, for reference
 
 check_pkg_manager() { # Check what package manager the user is running
   declare -A os_info;
-  os_info[/etc/redhat-release]="\033[38;2;157;37;253myum\033[0m"
-  os_info[/etc/arch-release]="\033[38;2;240;250;81mpacman\033[0m"
-  os_info[/etc/gentoo-release]="\033[38;2;111;64;248memerge\033[0m"
-  os_info[/etc/SuSE-release]="\033[38;2;82;250;112mzypp\033[0m"
-  os_info[/etc/debian_version]="\033[38;2;236;2;52mapt\033[0m"
-  os_info[/etc/alpine-release]="\033[38;2;7;217;247mapk\033[0m"
+  # os_info[/etc/redhat-release]="\033[38;2;157;37;253myum\033[0m"
+  # os_info[/etc/arch-release]="\033[38;2;240;250;81mpacman\033[0m"
+  # os_info[/etc/gentoo-release]="\033[38;2;111;64;248memerge\033[0m"
+  # os_info[/etc/SuSE-release]="\033[38;2;82;250;112mzypp\033[0m"
+  # os_info[/etc/debian_version]="\033[38;2;236;2;52mapt\033[0m"
+  # os_info[/etc/alpine-release]="\033[38;2;7;217;247mapk\033[0m"
+
+  ${os_info := "\033[38;2;255;0;0mUnknown\033[0m"}
 
   for f in ${!os_info[@]}
   do
@@ -20,6 +22,8 @@ check_pkg_manager() { # Check what package manager the user is running
     fi
   done
 }
+
+check_pkg_manager
 
 # Function that checks if the necessary TUI components exist
 check_if_tui_supported() {
