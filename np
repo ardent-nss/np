@@ -3,6 +3,44 @@
 
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
+# Embedded files
+project_json=$(cat <<EOF
+{
+  "projectname": "*np_name",
+  "stdversion": "*np_stdver",
+  "configurations": [
+    {
+      "configname": "*np_confname",
+      "os": "*np_os",
+      "arch": "*np_arch",
+      "gcc": "*np_gcc",
+      "g++": "*np_gpp",
+      "compilerargs": [
+        "*np_args"
+      ],
+      "sourcefiles": [
+        "*np_srcfiles"
+      ],
+      "cincludedirs": [
+        "*np_cincs"
+      ],
+      "cppincludedirs": [
+        "*np_cppincs"
+      ],
+      "libdirs": [
+        "*np_libdirs"
+      ],
+      "ldlibs": [
+        "*np_ldlibs"
+      ]
+    }
+  ],
+  "vscodeintegration": "np_vsctrf",
+  "vscodefolder": "*np_vscf"
+}
+EOF
+)
+
 xit() {
   printf "\033[0m"
   exit 0
@@ -18,8 +56,7 @@ regenerate_buildscript() {
 }
 
 extract_project_json() {
-  output=$(sed -n "/&#123 __BEGIN_PROJECT_JSON__/,/} __END_PROJECT_JSON__/p" np) # Read the file and extract the project.json file
-  echo "$output" >> .np/project.json # Write it to disk
+  echo $project_json | jq -s '' >> .np/project.json
 }
 
 if [ -f "$rootdir/.np/project.json" ]; then
@@ -45,7 +82,7 @@ printf "\033[0m"
 exit 0
 
 # This is the default project.json file that will be written to disk (never touched by shell)
-{ __BEGIN_PROJECT_JSON__
+{
   "projectname": "*np_name",
   "stdversion": "*np_stdver",
   "configurations": [
@@ -77,4 +114,4 @@ exit 0
   ],
   "vscodeintegration": *np_vsctrf,
   "vscodefolder": "*np_vscf"
-} __END_PROJECT_JSON__
+}

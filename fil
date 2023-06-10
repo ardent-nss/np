@@ -1,0 +1,33 @@
+{
+  "projectname": "*np_name",
+  "stdversion": "*np_stdver",
+  "configurations": [
+    {
+      "configname": "*np_confname",
+      "os": "*np_os",
+      "arch": "*np_arch",
+      "gcc": "*np_gcc",
+      "g++": "*np_gpp",
+      "compilerargs": [
+        "*np_args"
+      ],
+      "sourcefiles": [
+        "*np_srcfiles"
+      ],
+      "cincludedirs": [
+        "*np_cincs"
+      ],
+      "cppincludedirs": [
+        "*np_cppincs"
+      ],
+      "libdirs": [
+        "*np_libdirs"
+      ],
+      "ldlibs": [
+        "*np_ldlibs"
+      ]
+    }
+  ],
+  "vscodeintegration": *np_vsctrf,
+  "vscodefolder": "*np_vscf"
+}
