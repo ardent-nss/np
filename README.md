@@ -6,6 +6,6 @@ np is a build system for C++, made from scratch in Bash. Under early development
 
 Skill issue. It's 2023. Grow up.
 
-At the ***very*** least, your shell should make everything look discolored, not literally print out the escape sequences. This is how bash 5.2 behaves On My Machine™.
+At the ***very*** least, your shell should make everything look discolored, not literally print out the escape sequences. This is how bash 5.2 behaves On My Machine™. Coloring and formatting in the script is purely for aesthetics anyway, you'll do just fine without; it's just that a lot of us prefer half decent looking TUIs these days.
 
 ###### Everything in this repository is public domain, but I'd appreciate it if you gave credit to me for my work :)
