@@ -28,6 +28,6 @@
       ]
     }
   ],
-  "vscodeintegration": *np_vsctrf,
+  "vscodeintegration": "np_vsctrf",
   "vscodefolder": "*np_vscf"
 }

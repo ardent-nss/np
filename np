@@ -46,17 +46,14 @@ xit() {
   exit 0
 }
 
-create_new_project() {
-  xit
+new_project_wizard() {
+  printf "Valid characters for project name: a-z, A-Z, 0-9, and underscore (_). Cannot start with a number or capital letter. \033[1mThis script will make no checks to make sure this string is valid, so be careful.\033[0m\n\033[1m\033[38;2;86;255;71mProject name\033[0m: "
+  read np_name
 }
 
 regenerate_buildscript() {
   printf "\nthis is not what it sounds like\n"
   xit
-}
-
-extract_project_json() {
-  echo $project_json | jq -s '' >> .np/project.json
 }
 
 if [ -f "$rootdir/.np/project.json" ]; then
@@ -66,52 +63,18 @@ if [ -f "$rootdir/.np/project.json" ]; then
 fi
 
 printf "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
-read -p "" -n 1 -r
+read -n 1 -r
 if [[ $REPLY =~ ^[Nn]$ ]]; then
   printf "\nThen why did you launch this script???\n"
   xit
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\n"
-  mkdir -p .np
-  extract_project_json
+  new_project_wizard
+  #mkdir -p .np
+  #echo $project_json | jq -s '' >> .np/project.json # Extract project.json
   xit
 fi
 
 printf "\033[0m"
 exit 0
-
-# This is the default project.json file that will be written to disk (never touched by shell)
-{
-  "projectname": "*np_name",
-  "stdversion": "*np_stdver",
-  "configurations": [
-    {
-      "configname": "*np_confname",
-      "os": "*np_os",
-      "arch": "*np_arch",
-      "gcc": "*np_gcc",
-      "g++": "*np_gpp",
-      "compilerargs": [
-        "*np_args"
-      ],
-      "sourcefiles": [
-        "*np_srcfiles"
-      ],
-      "cincludedirs": [
-        "*np_cincs"
-      ],
-      "cppincludedirs": [
-        "*np_cppincs"
-      ],
-      "libdirs": [
-        "*np_libdirs"
-      ],
-      "ldlibs": [
-        "*np_ldlibs"
-      ]
-    }
-  ],
-  "vscodeintegration": *np_vsctrf,
-  "vscodefolder": "*np_vscf"
-}
