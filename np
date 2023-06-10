@@ -47,8 +47,17 @@ xit() {
 }
 
 new_project_wizard() {
-  printf "Valid characters for project name: a-z, A-Z, 0-9, and underscore (_). Cannot start with a number or capital letter. \033[1mThis script will make no checks to make sure this string is valid, so be careful.\033[0m\n\033[1m\033[38;2;86;255;71mProject name\033[0m: "
-  read np_name
+  while true; do
+    printf "\n\nValid characters for project name: a-z, A-Z, 0-9, and underscore (_). Cannot start with a number or capital letter.\n\033[1m\033[38;2;86;255;71mProject name\033[0m: "
+    read np_name
+
+    if [[ $np_name =~ [^a-zA-Z0-9_] ]]; then
+      echo "Project name contains characters other than a-z, A-Z, 0-9, or underscore. Please enter a new name."
+    else
+      printf "Project name is valid: \033[4m$np_name\033[0m"
+      break
+    fi
+  done
 }
 
 regenerate_buildscript() {
@@ -69,7 +78,6 @@ if [[ $REPLY =~ ^[Nn]$ ]]; then
   xit
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  printf "\n\n"
   new_project_wizard
   #mkdir -p .np
   #echo $project_json | jq -s '' >> .np/project.json # Extract project.json

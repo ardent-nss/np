@@ -1,6 +1,7 @@
 {
   "projectname": "*np_name",
-  "stdversion": "*np_stdver",
+  "cstdversion": "*np_cstdver",
+  "cppstdversion": "*np_cppstdver",
   "configurations": [
     {
       "configname": "*np_confname",
