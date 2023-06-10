@@ -1,20 +1,26 @@
 {
   "projectname": "cpp_project",
-  "rootdir": "np/",
-  "mainsrcname": "main.cpp",
   "stdversion": "c++23",
   "configurations": [
     {
+      "configname": "cpp_project_la64",
       "os": "linux",
-      "arch": "x86_64",
+      "arch": "arm64",
       "gcc": "aarch64-unknown-linux-gnu-gcc",
       "g++": "aarch64-unknown-linux-gnu-g++",
+      "sourcefiles": [
+        "src/main.cpp"
+      ],
       "includedirs": [
-        "/usr/"
+        "/usr/include",
+        "/some/funny/looking/path/include"
+      ],
+      "libdirs": [
+        "/usr/lib",
+        "/some/funny/looking/path/lib"
       ]
     }
   ],
-
   "vscodeintegration": true,
   "vscodefolder": ".vscode"
 }
