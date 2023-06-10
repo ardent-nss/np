@@ -7,7 +7,11 @@
     {
       "os": "linux",
       "arch": "x86_64",
-      ""
+      "gcc": "aarch64-unknown-linux-gnu-gcc",
+      "g++": "aarch64-unknown-linux-gnu-g++",
+      "includedirs": [
+        "/usr/"
+      ]
     }
   ],
 
