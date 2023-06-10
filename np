@@ -47,15 +47,26 @@ xit() {
 }
 
 new_project_wizard() {
-  while true; do
+  while true; do # Project name
     printf "\n\nValid characters for project name: a-z, A-Z, 0-9, and underscore (_). Cannot start with a number or capital letter.\n\033[1m\033[38;2;86;255;71mProject name\033[0m: "
     read np_name
 
     if [[ $np_name =~ [^a-zA-Z0-9_] ]]; then
       echo "Project name contains characters other than a-z, A-Z, 0-9, or underscore. Please enter a new name."
     else
-      printf "Project name is valid: \033[4m$np_name\033[0m"
+      printf "Project name is valid: \033[4m$np_name\033[0m\n"
       break
+    fi
+  done
+  while true; do # C Standard version
+    printf "\nValid C standard versions: c89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23\n\033[1m\033[38;2;241;255;71mC standard version\033[0m: "
+    read np_cstdver
+
+    if [[ $np_cstdver == "c89" || $np_cstdver == "c99" || $np_cstdver == "c11" || $np_cstdver == "c17" || $np_cstdver == "c23" || $np_cstdver == "gnu89" || $np_cstdver == "gnu99" || $np_cstdver == "gnu11" || $np_cstdver == "gnu17" || $np_cstdver == "gnu23" ]]; then
+      printf "Valid C standard version \033[4m$np_cstdver\033[0m entered."
+      break
+    else
+      echo "Invalid C standard version."
     fi
   done
 }
