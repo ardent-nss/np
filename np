@@ -25,38 +25,34 @@ check_pkg_manager() { # Check what package manager the user is running
   done
 }
 
-check_pkg_manager
-
-# Function that checks if the necessary TUI components exist
+# Check if the necessary TUI components exist
 check_if_tui_supported() {
   if hash dialog 2>/dev/null; then
     echo -e "TUI components exist. \x1b[38;2;0;100;0mLaunching with TUI\033[5m..."
     return 0
   else
-    echo "It doesn't look like you have the dialog binary installed, which is required for the TUI. Would you like to:"
-    echo "  0. Install the dialog binary via your package manager, and then proceed with the installation"
-    echo "  1. Ignore and attempt to launch the TUI anyway (ONLY IF YOU KNOW WHAT YOU ARE DOING!!)"
-    echo "  2. Proceed with the installation in a non-TUI way, similar to the way I'm communicating with you right now."
+    echo "It doesn't look like you have the dialog binary installed, which is required for the fancy TUI. Would you like to:"
+    echo "  0. Attempt the dialog binary via your package manager, and then proceed with the installation"
+    echo "  1. Proceed with the installation in a plain TUI way, similar to the way I'm communicating with you right now."
+    echo "  2. Ignore and attempt to launch the TUI anyway (ONLY IF YOU KNOW WHAT YOU ARE DOING!!)"
     echo "  3. Specify a custom location for the dialog binary (make sure you have its depencies installed!)"
+    printf "\033[1mType the number of the option you want to pick, like on a phone call.\n"
   fi
 }
 
-if [ $# -eq 0 ]; then
+if [ $# -eq 0 ]; then # If no arguments are supplied...
   echo "No arguments supplied. Checking if project already exists..."
   if [ -f "$rootdir/.np/project.json" ]; then
     echo "Project already exists. Launching configuration screen..."
   fi
-  echo
-  printf "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
+
+  printf "\nNo project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
   read -p "" -n 1 -r
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo
-    echo "nuclear bomb diffused"
+    printf "\nnuclear bomb diffused"
   fi
   echo
 fi
-
-check_if_tui_supported # After this is done executing, the user should have TUI components installed or they might install in "phonecall" mode.
 
 echo -e "\033[0m"
 exit 0
