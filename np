@@ -43,7 +43,7 @@ check_if_tui_supported() {
 if [ $# -eq 0 ]; then # If no arguments are supplied...
   echo "No arguments supplied. Checking if project already exists..."
   if [ -f "$rootdir/.np/project.json" ]; then
-    echo "Project already exists. Launching configuration screen..."
+    echo "Project already exists. Regenerating build script..."
   fi
 
   printf "\nNo project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "

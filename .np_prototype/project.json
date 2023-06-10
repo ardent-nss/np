@@ -1,23 +1,69 @@
 {
   "projectname": "cpp_project",
-  "stdversion": "c++23",
+  "stdversion": "gnu++23",
   "configurations": [
     {
       "configname": "cpp_project_la64",
       "os": "linux",
       "arch": "arm64",
-      "gcc": "aarch64-unknown-linux-gnu-gcc",
-      "g++": "aarch64-unknown-linux-gnu-g++",
-      "sourcefiles": [
-        "src/main.cpp"
+      "gcc": "gcc",
+      "g++": "g++",
+      "compilerargs": [
+        "-Wall",
+        "-Wextra",
+        "-pedantic"
       ],
-      "includedirs": [
-        "/usr/include",
+      "sourcefiles": [
+        "src/main.cpp",
+        "src/physics.cpp"
+      ],
+      "cincludedirs": [
+        "/usr/local/include/c++/13.1.1/",
+        "/some/funny/looking/path/include"
+      ],
+      "cppincludedirs": [
+        "/usr/local/include/c++/13.1.1/",
         "/some/funny/looking/path/include"
       ],
       "libdirs": [
-        "/usr/lib",
+        "/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1",
         "/some/funny/looking/path/lib"
+      ],
+      "ldlibs": [
+        "-lglfw3",
+        "-lopengl32"
+      ]
+    },
+    {
+      "configname": "cpp_project_lx64",
+      "os": "linux",
+      "arch": "x86_64",
+      "gcc": "gcc",
+      "g++": "g++",
+      "compilerargs": [
+        "-Wall",
+        "-Wextra",
+        "-pedantic"
+      ],
+      "sourcefiles": [
+        "src/main.cpp",
+        "src/physics.cpp"
+      ],
+      "cincludedirs": [
+        "/usr/local/include/c++/13.1.1/",
+        "/some/funny/looking/path/include"
+      ],
+      "cppincludedirs": [
+        "/usr/local/include/c++/13.1.1/",
+        "/some/funny/looking/path/include"
+      ],
+      "libdirs": [
+        "/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1",
+        "/some/funny/looking/path/lib"
+      ],
+      "ldlibs": [
+        "-lglfw3",
+        "-lopengl32"
       ]
     }
   ],
