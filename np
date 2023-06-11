@@ -69,6 +69,17 @@ new_project_wizard() {
       echo "Invalid C standard version."
     fi
   done
+  while true; do # C++ Standard version
+    printf "\n\nValid C++ standard versions: c++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23\n\033[1m\033[38;2;50;255;255mC++ standard version\033[0m: "
+    read np_cppstdver
+
+    if [[ $np_cppstdver == "c++98" || $np_cppstdver == "c++03" || $np_cppstdver == "c++11" || $np_cppstdver == "c++14" || $np_cppstdver == "c++17" || $np_cppstdver == "c++20" || $np_cppstdver == "c++23" || $np_cppstdver == "gnu++98" || $np_cppstdver == "gnu++03" || $np_cppstdver == "gnu++11" || $np_cppstdver == "gnu++14" || $np_cppstdver == "gnu++17" || $np_cppstdver == "gnu++20" || $np_cppstdver == "gnu++23" ]]; then
+      printf "Valid C++ standard version \033[4m$np_cppstdver\033[0m entered."
+      break
+    else
+      echo "Invalid C++ standard version."
+    fi
+  done
 }
 
 regenerate_buildscript() {
