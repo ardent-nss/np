@@ -80,6 +80,8 @@ new_project_wizard() {
       echo "Invalid C++ standard version."
     fi
   done
+
+  printf "\n\nGreat A template"
 }
 
 regenerate_buildscript() {
