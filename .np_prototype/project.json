@@ -1,34 +1,37 @@
 {
-  "projectname": "*np_name",
-  "cstdversion": "*np_cstdver",
-  "cppstdversion": "*np_cppstdver",
+  "projectname": "np_name",
+  "cstdversion": "np_cstdver",
+  "cppstdversion": "np_cppstdver",
   "configurations": [
     {
-      "configname": "*np_confname",
-      "os": "*np_os",
-      "arch": "*np_arch",
-      "gcc": "*np_gcc",
-      "g++": "*np_gpp",
-      "compilerargs": [
-        "*np_args"
+      "configname": "np_confname",
+      "os": "np_os",
+      "arch": "np_arch",
+      "gcc": "np_gcc",
+      "g++": "np_gpp",
+      "gccargs": [
+        "np_gccargs"
+      ],
+      "gppargs": [
+        "np_gppargs"
       ],
       "sourcefiles": [
-        "*np_srcfiles"
+        "np_srcfiles"
       ],
       "cincludedirs": [
-        "*np_cincs"
+        "np_cincs"
       ],
       "cppincludedirs": [
-        "*np_cppincs"
+        "np_cppincs"
       ],
       "libdirs": [
-        "*np_libdirs"
+        "np_libdirs"
       ],
       "ldlibs": [
-        "*np_ldlibs"
+        "np_ldlibs"
       ]
     }
   ],
-  "vscodeintegration": "np_vsctrf",
-  "vscodefolder": "*np_vscf"
+  "vscodeintegration": np_trf,
+  "vscodefolder": "np_vscf"
 }

@@ -3,41 +3,9 @@
 
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
-# Embedded files
+# Embedded files (decoded from base64 just before writing)
 project_json=$(cat <<EOF
-{
-  "projectname": "name",
-  "stdversion": "stdver",
-  "configurations": [
-    {
-      "configname": "confname",
-      "os": "os",
-      "arch": "arch",
-      "gcc": "gcc",
-      "g++": "gpp",
-      "compilerargs": [
-        "args"
-      ],
-      "sourcefiles": [
-        "srcfiles"
-      ],
-      "cincludedirs": [
-        "cincs"
-      ],
-      "cppincludedirs": [
-        "cppincs"
-      ],
-      "libdirs": [
-        "libdirs"
-      ],
-      "ldlibs": [
-        "ldlibs"
-      ]
-    }
-  ],
-  "vscodeintegration": false,
-  "vscodefolder": "vscf"
-}
+ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiY29uZmlndXJhdGlvbnMiOiBbCiAgICB7CiAgICAgICJjb25maWduYW1lIjogIm5wX2NvbmZuYW1lIiwKICAgICAgIm9zIjogIm5wX29zIiwKICAgICAgImFyY2giOiAibnBfYXJjaCIsCiAgICAgICJnY2MiOiAibnBfZ2NjIiwKICAgICAgImcrKyI6ICJucF9ncHAiLAogICAgICAiY29tcGlsZXJhcmdzIjogWwogICAgICAgICJucF9hcmdzIgogICAgICBdLAogICAgICAic291cmNlZmlsZXMiOiBbCiAgICAgICAgIm5wX3NyY2ZpbGVzIgogICAgICBdLAogICAgICAiY2luY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jaW5jcyIKICAgICAgXSwKICAgICAgImNwcGluY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jcHBpbmNzIgogICAgICBdLAogICAgICAibGliZGlycyI6IFsKICAgICAgICAibnBfbGliZGlycyIKICAgICAgXSwKICAgICAgImxkbGlicyI6IFsKICAgICAgICAibnBfbGRsaWJzIgogICAgICBdCiAgICB9CiAgXSwKICAidnNjb2RlaW50ZWdyYXRpb24iOiBucF90cmYsCiAgInZzY29kZWZvbGRlciI6ICJucF92c2NmIgp9
 EOF
 )
 template_cpp=$(cat <<EOF
@@ -69,7 +37,7 @@ if [[ $REPLY =~ ^[Nn]$ ]]; then
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   mkdir -p .np
-  echo $project_json | jq -s '' >> .np/project.json # Extract project.json
+  echo $project_json | base64 -d >> .np/project.json # Extract project.json
   printf "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
   mkdir -p src
   echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
