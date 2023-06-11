@@ -42,6 +42,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   mkdir -p src
   echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
+  if [[ -f "~/.config/np/defaults.json" ]]; then
+    printf "Replacing values in \033[38;2;57;255;60m.np/project.json\033[0m with defaults in \033[38;2;251;255;57m~/.config/np/defaults.json\033[0m...\n"
+    # The hard part will be worked on tomorrow. I have a movie to watch!!
   xit
 fi
 
