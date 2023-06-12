@@ -1,0 +1,37 @@
+{
+	"projectname": "cpp_playground",
+	"cstdversion": "gnu23",
+	"cppstdversion": "gnu++23",
+	"configurations": [
+		{
+			"configname": "np_confname",
+			"os": "np_os",
+			"arch": "np_arch",
+			"gcc": "np_gcc",
+			"g++": "np_gpp",
+			"gccargs": [
+				"np_gccargs"
+			],
+			"gppargs": [
+				"np_gppargs"
+			],
+			"sourcefiles": [
+				"np_srcfiles"
+			],
+			"cincludedirs": [
+				"np_cincs"
+			],
+			"cppincludedirs": [
+				"np_cppincs"
+			],
+			"libdirs": [
+				"np_libdirs"
+			],
+			"ldlibs": [
+				"np_ldlibs"
+			]
+		}
+	],
+	"vscodeintegration": false,
+	"vscodefolder": ".vscode"
+}
