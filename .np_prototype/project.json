@@ -32,6 +32,6 @@
       ]
     }
   ],
-  "vscodeintegration": np_trf,
+  "vscodeintegration": false,
   "vscodefolder": "np_vscf"
 }

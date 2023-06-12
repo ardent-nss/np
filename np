@@ -5,7 +5,7 @@ rootdir=$(pwd) # Current directory, for reference (this will serve as our "home"
 
 # Embedded files (decoded from base64 just before writing)
 project_json=$(cat <<EOF
-ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiY29uZmlndXJhdGlvbnMiOiBbCiAgICB7CiAgICAgICJjb25maWduYW1lIjogIm5wX2NvbmZuYW1lIiwKICAgICAgIm9zIjogIm5wX29zIiwKICAgICAgImFyY2giOiAibnBfYXJjaCIsCiAgICAgICJnY2MiOiAibnBfZ2NjIiwKICAgICAgImcrKyI6ICJucF9ncHAiLAogICAgICAiY29tcGlsZXJhcmdzIjogWwogICAgICAgICJucF9hcmdzIgogICAgICBdLAogICAgICAic291cmNlZmlsZXMiOiBbCiAgICAgICAgIm5wX3NyY2ZpbGVzIgogICAgICBdLAogICAgICAiY2luY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jaW5jcyIKICAgICAgXSwKICAgICAgImNwcGluY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jcHBpbmNzIgogICAgICBdLAogICAgICAibGliZGlycyI6IFsKICAgICAgICAibnBfbGliZGlycyIKICAgICAgXSwKICAgICAgImxkbGlicyI6IFsKICAgICAgICAibnBfbGRsaWJzIgogICAgICBdCiAgICB9CiAgXSwKICAidnNjb2RlaW50ZWdyYXRpb24iOiBucF90cmYsCiAgInZzY29kZWZvbGRlciI6ICJucF92c2NmIgp9
+ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiY29uZmlndXJhdGlvbnMiOiBbCiAgICB7CiAgICAgICJjb25maWduYW1lIjogIm5wX2NvbmZuYW1lIiwKICAgICAgIm9zIjogIm5wX29zIiwKICAgICAgImFyY2giOiAibnBfYXJjaCIsCiAgICAgICJnY2MiOiAibnBfZ2NjIiwKICAgICAgImcrKyI6ICJucF9ncHAiLAogICAgICAiZ2NjYXJncyI6IFsKICAgICAgICAibnBfZ2NjYXJncyIKICAgICAgXSwKICAgICAgImdwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJzb3VyY2VmaWxlcyI6IFsKICAgICAgICAibnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJjaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NpbmNzIgogICAgICBdLAogICAgICAiY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJsaWJkaXJzIjogWwogICAgICAgICJucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRsaWJzIjogWwogICAgICAgICJucF9sZGxpYnMiCiAgICAgIF0KICAgIH0KICBdLAogICJ2c2NvZGVpbnRlZ3JhdGlvbiI6IGZhbHNlLAogICJ2c2NvZGVmb2xkZXIiOiAibnBfdnNjZiIKfQ==
 EOF
 )
 template_cpp=$(cat <<EOF
@@ -19,7 +19,7 @@ xit() {
 }
 
 regenerate_buildscript() {
-  printf "\nthis is not what it sounds like\n"
+  printf "\nyou probably ran this by mistake. delete .np directory!\n"
   xit
 }
 
@@ -39,12 +39,19 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   mkdir -p .np
   echo $project_json | base64 -d >> .np/project.json # Extract project.json
   printf "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
-  mkdir -p src
-  echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
+  #mkdir -p src
+  #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-  if [[ -f "~/.config/np/defaults.json" ]]; then
-    printf "Replacing values in \033[38;2;57;255;60m.np/project.json\033[0m with defaults in \033[38;2;251;255;57m~/.config/np/defaults.json\033[0m...\n"
-    # The hard part will be worked on tomorrow. I have a movie to watch!!
+  [ -f ~/.config/np/defaults.json ] && {
+    printf "\033[38;2;241;255;71m~/.config/np/defaults.json\033[0m exists, attempting to F&R with defaut values...\n"
+    cd .np
+
+    d_projectname=$(jq -r '.d_projectname' ~/.config/np/defaults.json)
+    if [[ $d_projectname != "null" ]]; then
+      jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+    fi
+  }
+
   xit
 fi
 
