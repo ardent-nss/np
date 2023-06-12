@@ -52,22 +52,34 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mproject name\033[0m\n"
+
     # C standard version
     d_cstdversion=$(jq -r '.d_cstdversion' ~/.config/np/defaults.json)
     if [[ $d_cstdversion != "null" ]]; then
       jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mC standard version\033[0m\n"
+
     # C++ standard version
     d_cppstdversion=$(jq -r '.d_cppstdversion' ~/.config/np/defaults.json)
     if [[ $d_cppstdversion != "null" ]]; then
       jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mC++ standard version\033[0m\n"
+
+    # VSCode integration toggle
+    d_vscodeintegration=$(jq -r '.d_vscodeintegration' ~/.config/np/defaults.json)
+    if [[ $d_vscodeintegration == "true" ]]; then
+      jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+    else
+      jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+    fi
+    printf "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
+
     # VSCode projects folder
     d_vscodefolder=$(jq -r '.d_vscodefolder' ~/.config/np/defaults.json)
     if [[ $d_vscodefolder != "null" ]]; then
-      jq --tab --arg d_vscodefolder $d_vscodefolder '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
   }
