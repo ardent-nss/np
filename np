@@ -1,9 +1,29 @@
 #!/bin/bash
 #  np: New Project C/C++ build system
 
+scriptversion=v0.0.1.0
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
-# Embedded files (decoded from base64 just before writing)
+xit() {
+  printf "\033[0m" # Reset terminal colors for dumb shells
+  exit 0
+}
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  printf "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
+To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory.\n
+\033[4mGeneral options:\033[0m
+  -h | --help\t\tdisplay this help page
+  -v | --version\tdisplay the version number of the script (${scriptversion})
+  -d | --documentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
+  -g | --make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+
+\033[4mNew project generation options:\033[0m
+  -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m"
+  exit 0
+fi
+
+# Embedded files (decoded from base64 just before writing to disk)
 project_json=$(cat <<EOF
 ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiY29uZmlndXJhdGlvbnMiOiBbCiAgICB7CiAgICAgICJjb25maWduYW1lIjogIm5wX2NvbmZuYW1lIiwKICAgICAgIm9zIjogIm5wX29zIiwKICAgICAgImFyY2giOiAibnBfYXJjaCIsCiAgICAgICJnY2MiOiAibnBfZ2NjIiwKICAgICAgImcrKyI6ICJucF9ncHAiLAogICAgICAiZ2NjYXJncyI6IFsKICAgICAgICAibnBfZ2NjYXJncyIKICAgICAgXSwKICAgICAgImdwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJzb3VyY2VmaWxlcyI6IFsKICAgICAgICAibnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJjaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NpbmNzIgogICAgICBdLAogICAgICAiY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJsaWJkaXJzIjogWwogICAgICAgICJucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRsaWJzIjogWwogICAgICAgICJucF9sZGxpYnMiCiAgICAgIF0KICAgIH0KICBdLAogICJ2c2NvZGVpbnRlZ3JhdGlvbiI6IGZhbHNlLAogICJ2c2NvZGVmb2xkZXIiOiAibnBfdnNjZiIKfQ==
 EOF
@@ -13,13 +33,9 @@ Ly9tYWluLmNwcDogPGRlc2NyaWJlIHdoYXQgdGhpcyBmaWxlIGRvZXM+CgovL0luY2x1ZGVzCiNpbmNs
 EOF
 )
 
-xit() {
-  printf "\033[0m"
-  exit 0
-}
-
 regenerate_buildscript() {
-  printf "\nyou probably ran this by mistake. delete .np directory!\n"
+  printf "\nyou probably ran this by mistake. I deleted the .np directory for you, run me again!\n"
+  rm -rfv .np
   xit
 }
 
@@ -43,7 +59,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
   [ -f ~/.config/np/defaults.json ] && {
-    printf "\033[38;2;241;255;71m~/.config/np/defaults.json\033[0m exists, attempting to F&R with defaut values...\n"
+    printf "\033[38;2;241;255;71m~/.config/np/defaults.json\033[0m exists, attempting to F&R with defaut values...\n\n"
     cd .np
 
     # Project name
