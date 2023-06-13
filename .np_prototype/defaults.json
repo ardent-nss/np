@@ -1,0 +1,37 @@
+{
+  "d_projectname": "np_name",
+  "d_cstdversion": "np_cstdver",
+  "d_cppstdversion": "np_cppstdver",
+  "d_configurations": [
+    {
+      "d_configname": "np_confname",
+      "d_os": "np_os",
+      "d_arch": "np_arch",
+      "d_gcc": "np_gcc",
+      "d_g++": "np_gpp",
+      "d_gccargs": [
+        "np_gccargs"
+      ],
+      "d_gppargs": [
+        "np_gppargs"
+      ],
+      "d_sourcefiles": [
+        "np_srcfiles"
+      ],
+      "d_cincludedirs": [
+        "np_cincs"
+      ],
+      "d_cppincludedirs": [
+        "np_cppincs"
+      ],
+      "d_libdirs": [
+        "np_libdirs"
+      ],
+      "d_ldlibs": [
+        "np_ldlibs"
+      ]
+    }
+  ],
+  "d_vscodeintegration": false,
+  "d_vscodefolder": "np_vscf"
+}
