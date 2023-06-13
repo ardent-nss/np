@@ -17,6 +17,7 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   -v | --version\tdisplay the version number of the script (${scriptversion})
   -d | --documentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
   -m | --make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+                [PATH]\t Specify a specific place to put the generated file by typing PATH
 
 \033[4mNew project generation options:\033[0m
   -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
@@ -34,6 +35,22 @@ if [[ "$1" == "-v" || "$1" == "--version" ]]; then
   xit
 fi
 
+if [[ "$1" == "-m" || "$1" == "--make-defaults" ]]; then
+  mkdir -p ~/.config/np
+  echo $defaults_json | base64 -d >> ~/.config/np/defaults.json
+
+  xit
+fi
+
+if [[ "$1" == "-o" || "$1" == "--other-defaults" ]]; then
+  defaults_path=$2
+  defaults_path=${defaults_path:="~/.config/np/defaults.json"}
+  if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
+    printf "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
+  else
+    printf "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
+  fi
+fi
 
 # Embedded files (decoded from base64 just before writing to disk)
 project_json=$(cat <<EOF
@@ -49,7 +66,7 @@ Ly9tYWluLmNwcDogPGRlc2NyaWJlIHdoYXQgdGhpcyBmaWxlIGRvZXM+CgovL0luY2x1ZGVzCiNpbmNs
 EOF
 )
 
-defaults_path=$defaults_path # Default defaults.json path
+defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
 
 
