@@ -17,28 +17,21 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   -v | --version\tdisplay the version number of the script (${scriptversion})
   -d | --documentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
   -m | --make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
-                [PATH]\t Specify a specific place to put the generated file by typing PATH
+                [PATH]\tSpecify a specific place to put the generated file by typing PATH
 
 \033[4mNew project generation options:\033[0m
-  -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
-  -o | --other-defaults\t Use a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m. It doesn't need to be named defaults.json specifically and can be placed anywhere on disk as long as the script has read access.
-                 [PATH]\t If you specify something like \`foobar\` in place of PATH, the script will assume you mean ~/.config/np/foobar.json.
+  -n | --no-defaults\tDon't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
+  -o | --other-defaults\tUse a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m. It doesn't need to be named defaults.json specifically and can be placed anywhere on disk as long as the script has read access.
+                 [PATH]\tIf you specify something like \`foobar\` in place of PATH, the script will assume you mean ~/.config/np/foobar.json.
 
 \033[4mOptions for existing projects:\033[0m
-  -r | --regenerate\t Regenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
+  -r | --regenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
 "
   xit
 fi
 
 if [[ "$1" == "-v" || "$1" == "--version" ]]; then
   printf "$scriptversion\n"
-  xit
-fi
-
-if [[ "$1" == "-m" || "$1" == "--make-defaults" ]]; then
-  mkdir -p ~/.config/np
-  echo $defaults_json | base64 -d >> ~/.config/np/defaults.json
-
   xit
 fi
 
@@ -65,6 +58,14 @@ template_cpp=$(cat <<EOF
 Ly9tYWluLmNwcDogPGRlc2NyaWJlIHdoYXQgdGhpcyBmaWxlIGRvZXM+CgovL0luY2x1ZGVzCiNpbmNsdWRlIDxpb3N0cmVhbT4gLy9Db25zb2xlIEkvTyBzdHJlYW1zCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKSB7CiAgLy9tYWtlIHN0YWxsbWFuIHByb3VkIQoKICByZXR1cm4gMDsKfQ==
 EOF
 )
+
+if [[ "$1" == "-m" || "$1" == "--make-defaults" ]]; then
+  mkd_path=$2
+  mkd_path=${mkd_path:=~/.config/np/defaults.json}
+  echo $defaults_json | base64 -d >> $mkd_path
+  printf "Wrote new defaults file \033[38;2;241;255;71m$mkd_path\033[0m"
+  xit
+fi
 
 defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
