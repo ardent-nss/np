@@ -2,6 +2,7 @@
   "d_projectname": "np_name",
   "d_cstdversion": "np_cstdver",
   "d_cppstdversion": "np_cppstdver",
+  "d_threads": 1,
   "d_configurations": [
     {
       "d_configname": "np_confname",
