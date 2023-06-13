@@ -1,8 +1,93 @@
 {
-  "projectname": "cpp_playground",
-  "cstdversion": "gnu23",
-  "cppstdversion": "gnu++23",
-  "configurations": [],
-  "vscodeintegration": true,
-  "vscodefolder": ".vscode"
+	"projectname": "cpp_playground",
+	"cstdversion": "gnu23",
+	"cppstdversion": "gnu++23",
+	"configurations": [
+		{
+			"configname": "cpp_playground_la64",
+			"os": "linux",
+			"arch": "arm64",
+			"gcc": "gcc",
+			"g++": "g++",
+			"gccargs": [
+				"-Wall",
+				"-Wextra",
+				"-pedantic",
+				"-pg",
+				"-g3",
+				"-Os",
+				"-flto",
+				"-save-temps",
+				"-fdiagnostics-color=always"
+			],
+			"gppargs": [
+				"-Wall",
+				"-Wextra",
+				"-pedantic",
+				"-pg",
+				"-g3",
+				"-Os",
+				"-flto",
+				"-save-temps",
+				"-fdiagnostics-color=always"
+			],
+			"sourcefiles": [
+				"src/main.cpp"
+			],
+			"cincludedirs": [
+				"/usr/local/include/c++/13.1.1/"
+			],
+			"cppincludedirs": [
+				"/usr/local/include/c++/13.1.1/"
+			],
+			"libdirs": [
+				"/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1"
+			],
+			"ldlibs": []
+		},
+		{
+			"configname": "cpp_project_lx64",
+			"os": "linux",
+			"arch": "x86_64",
+			"gcc": "gcc",
+			"g++": "g++",
+			"gccargs": [
+				"-Wall",
+				"-Wextra",
+				"-pedantic",
+				"-pg",
+				"-g3",
+				"-Os",
+				"-flto",
+				"-save-temps",
+				"-fdiagnostics-color=always"
+			],
+			"gppargs": [
+				"-Wall",
+				"-Wextra",
+				"-pedantic",
+				"-pg",
+				"-g3",
+				"-Os",
+				"-flto",
+				"-save-temps",
+				"-fdiagnostics-color=always"
+			],
+			"sourcefiles": [
+				"src/main.cpp"
+			],
+			"cincludedirs": [
+				"/usr/local/include/c++/13.1.1/"
+			],
+			"cppincludedirs": [
+				"/usr/local/include/c++/13.1.1/"
+			],
+			"libdirs": [
+				"/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1"
+			],
+			"ldlibs": []
+		}
+	],
+	"vscodeintegration": true,
+	"vscodefolder": ".vscode"
 }

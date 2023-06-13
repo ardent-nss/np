@@ -108,12 +108,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       n_iter=$((n_iter+1))
       if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json) != "null" ]]; then
         printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
-        jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json | jq '.configurations += ["'"$new_fruit"'"]'
+        ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json)
+        jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       else
         echo "No build configurations left to copy."
         break
       fi
     done
+    sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
   }
 
   xit
