@@ -20,14 +20,20 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
 
 \033[4mNew project generation options:\033[0m
   -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
-  -o | --other-defaults\t Use a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
-                 [PATH]
+  -o | --other-defaults\t Use a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m. It doesn't need to be named defaults.json specifically and can be placed anywhere on disk as long as the script has read access.
+                 [PATH]\t If you specify something like \`foobar\` in place of PATH, the script will assume you mean ~/.config/np/foobar.json.
 
 \033[4mOptions for existing projects:\033[0m
   -r | --regenerate\t Regenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
 "
   xit
 fi
+
+if [[ "$1" == "-v" || "$1" == "--version" ]]; then
+  printf "$scriptversion\n"
+  xit
+fi
+
 
 # Embedded files (decoded from base64 just before writing to disk)
 project_json=$(cat <<EOF
