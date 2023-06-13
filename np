@@ -35,6 +35,10 @@ if [[ "$1" == "-v" || "$1" == "--version" ]]; then
   xit
 fi
 
+if [[ "$1" == "-n" || "$1" == "--no-defaults" ]]; then
+  dontusedefaults=1
+fi
+
 if [[ "$1" == "-o" || "$1" == "--other-defaults" ]]; then
   defaults_path=$2
   defaults_path=${defaults_path:="~/.config/np/defaults.json"}
@@ -96,8 +100,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   #mkdir -p src
   #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-  [ -f $defaults_path ] && {
-    printf "\033[38;2;241;255;71m$defaults_path\033[0m exists, attempting to F&R with defaut values...\n\n"
+  if [[ $dontusedefaults != 1 ]]; then
+    printf "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
     cd .np
 
     # Project name
@@ -154,8 +158,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       fi
     done
     sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
-  }
-
+  fi
+  printf "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
   xit
 fi
 
