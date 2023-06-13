@@ -11,16 +11,22 @@ xit() {
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   printf "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
-To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory.\n
+To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
   -h | --help\t\tdisplay this help page
   -v | --version\tdisplay the version number of the script (${scriptversion})
   -d | --documentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
-  -g | --make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+  -m | --make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
 
 \033[4mNew project generation options:\033[0m
-  -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m"
-  exit 0
+  -n | --no-defaults\t Don't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
+  -o | --other-defaults\t Use a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
+                 [PATH]
+
+\033[4mOptions for existing projects:\033[0m
+  -r | --regenerate\t Regenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
+"
+  xit
 fi
 
 # Embedded files (decoded from base64 just before writing to disk)
@@ -29,16 +35,21 @@ ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIs
 EOF
 )
 defaults_json=$(cat <<EOF
-.np_prototype/project.json
+ewogICJkX3Byb2plY3RuYW1lIjogIm5wX25hbWUiLAogICJkX2NzdGR2ZXJzaW9uIjogIm5wX2NzdGR2ZXIiLAogICJkX2NwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiZF9jb25maWd1cmF0aW9ucyI6IFsKICAgIHsKICAgICAgImRfY29uZmlnbmFtZSI6ICJucF9jb25mbmFtZSIsCiAgICAgICJkX29zIjogIm5wX29zIiwKICAgICAgImRfYXJjaCI6ICJucF9hcmNoIiwKICAgICAgImRfZ2NjIjogIm5wX2djYyIsCiAgICAgICJkX2crKyI6ICJucF9ncHAiLAogICAgICAiZF9nY2NhcmdzIjogWwogICAgICAgICJucF9nY2NhcmdzIgogICAgICBdLAogICAgICAiZF9ncHBhcmdzIjogWwogICAgICAgICJucF9ncHBhcmdzIgogICAgICBdLAogICAgICAiZF9zb3VyY2VmaWxlcyI6IFsKICAgICAgICAibnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJkX2NpbmNsdWRlZGlycyI6IFsKICAgICAgICAibnBfY2luY3MiCiAgICAgIF0sCiAgICAgICJkX2NwcGluY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jcHBpbmNzIgogICAgICBdLAogICAgICAiZF9saWJkaXJzIjogWwogICAgICAgICJucF9saWJkaXJzIgogICAgICBdLAogICAgICAiZF9sZGxpYnMiOiBbCiAgICAgICAgIm5wX2xkbGlicyIKICAgICAgXQogICAgfQogIF0sCiAgImRfdnNjb2RlaW50ZWdyYXRpb24iOiBmYWxzZSwKICAiZF92c2NvZGVmb2xkZXIiOiAibnBfdnNjZiIKfQ==
+EOF
 )
 template_cpp=$(cat <<EOF
 Ly9tYWluLmNwcDogPGRlc2NyaWJlIHdoYXQgdGhpcyBmaWxlIGRvZXM+CgovL0luY2x1ZGVzCiNpbmNsdWRlIDxpb3N0cmVhbT4gLy9Db25zb2xlIEkvTyBzdHJlYW1zCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKSB7CiAgLy9tYWtlIHN0YWxsbWFuIHByb3VkIQoKICByZXR1cm4gMDsKfQ==
 EOF
 )
 
+defaults_path=$defaults_path # Default defaults.json path
+
+
+
 regenerate_buildscript() {
-  printf "\nyou probably ran this by mistake. I deleted the .np directory for you, run me again!\n"
   rm -rfv .np
+  printf "\nI deleted the .np directory for you, run me again!\n"
   xit
 }
 
@@ -61,33 +72,33 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   #mkdir -p src
   #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-  [ -f ~/.config/np/defaults.json ] && {
-    printf "\033[38;2;241;255;71m~/.config/np/defaults.json\033[0m exists, attempting to F&R with defaut values...\n\n"
+  [ -f $defaults_path ] && {
+    printf "\033[38;2;241;255;71m$defaults_path\033[0m exists, attempting to F&R with defaut values...\n\n"
     cd .np
 
     # Project name
-    d_projectname=$(jq -r '.d_projectname' ~/.config/np/defaults.json)
+    d_projectname=$(jq -r '.d_projectname' $defaults_path)
     if [[ $d_projectname != "null" ]]; then
       jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mproject name\033[0m\n"
 
     # C standard version
-    d_cstdversion=$(jq -r '.d_cstdversion' ~/.config/np/defaults.json)
+    d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
     if [[ $d_cstdversion != "null" ]]; then
       jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mC standard version\033[0m\n"
 
     # C++ standard version
-    d_cppstdversion=$(jq -r '.d_cppstdversion' ~/.config/np/defaults.json)
+    d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
     if [[ $d_cppstdversion != "null" ]]; then
       jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mC++ standard version\033[0m\n"
 
     # VSCode integration toggle
-    d_vscodeintegration=$(jq -r '.d_vscodeintegration' ~/.config/np/defaults.json)
+    d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
     if [[ $d_vscodeintegration == "true" ]]; then
       jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     else
@@ -96,22 +107,22 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     printf "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
 
     # VSCode projects folder
-    d_vscodefolder=$(jq -r '.d_vscodefolder' ~/.config/np/defaults.json)
+    d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
     if [[ $d_vscodefolder != "null" ]]; then
       jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
     fi
     printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
 
     # Build configurations (the hard part)
-    if [[ $(jq --tab '.d_configurations[0]' ~/.config/np/defaults.json) != "null" ]]; then
+    if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
       jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
     fi
     n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
     while true; do
       n_iter=$((n_iter+1))
-      if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json) != "null" ]]; then
+      if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
         printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
-        ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json)
+        ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
         jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       else
         echo "No build configurations left to copy."
