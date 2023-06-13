@@ -75,15 +75,10 @@ defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
 
 
-regenerate_buildscript() {
+if [ -f "$rootdir/.np/project.json" ]; then
+  printf "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
   rm -rfv .np
   printf "\nI deleted the .np directory for you, run me again!\n"
-  xit
-}
-
-if [ -f "$rootdir/.np/project.json" ]; then
-  printf "Regenerating build script...\n"
-  regenerate_buildscript
   xit
 fi
 
