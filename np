@@ -100,11 +100,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
 
     # Build configurations (the hard part)
-    n_iter=-1 # jq array starts with 0, so set it to -1 first.
+    if [[ $(jq --tab '.d_configurations[0]' ~/.config/np/defaults.json) != "null" ]]; then
+      jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+    fi
+    n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
     while true; do
       n_iter=$((n_iter+1))
       if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json) != "null" ]]; then
-        printf "Copying \033[1mbuild configuration\033[0m #$n_iter\n"
+        printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
+        jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' ~/.config/np/defaults.json | jq '.configurations += ["'"$new_fruit"'"]'
       else
         echo "No build configurations left to copy."
         break
