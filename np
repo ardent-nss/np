@@ -50,7 +50,28 @@ if [[ "$1" == "-o" || "$1" == "--other-defaults" ]]; then
 fi
 
 if [[ "$1" == "-d" || "$1" == "--documentation" ]]; then
-  printf "$scriptversion\n"
+  printf "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
+  \033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
+  \033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: c89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23.
+  \033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: c++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.
+  \033[38;2;141;218;255mthreads\033[0m [\033[38;2;215;50;205m\033[3minteger\033[0m]: the number of threads that will be used to compile the project.
+  \033[38;2;141;218;255mconfigurations\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain build configuration for the project, such as one for arm64 and one for x86_64. You can obviously make multiple configurations, that's why it's an array. \033[1mDocumentation for array entries:\033[0m
+    \033[38;2;141;218;255mconfigname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
+    \033[38;2;141;218;255mos\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's OS target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
+    \033[38;2;141;218;255march\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's processor architecture target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
+    \033[38;2;141;218;255mgcc\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the gcc binary
+    \033[38;2;141;218;255mgpp\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the g++ binary
+    \033[38;2;141;218;255mgccargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to GCC. Each argument goes in a new entry.
+    \033[38;2;141;218;255mgppargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to G++. Each argument goes in a new entry.
+    \033[38;2;141;218;255msourcefiles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote paths to individual source code files to be compiled, relative to the root directory of the project (where .np/ is considered a subdirectory). Each file goes in a new entry.
+    \033[38;2;141;218;255mcincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C compiler. Each directory goes in a new entry.
+    \033[38;2;141;218;255mcppincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C++ compiler. Each directory goes in a new entry.
+    \033[38;2;141;218;255mlibdirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of library files to be made available to the linker. Each directory goes in a new entry.
+    \033[38;2;141;218;255mldlibs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote the library files that need to be linked to the executable in -l{name} form. Each file goes in a new entry.
+  \033[38;2;141;218;255mvscodeintegration\033[0m [\033[38;2;255;141;142m\033[3mboolean\033[0m]: whether to activate integration with Visual Studio Code or not. If true, it will modify {projectrootdir}/.vscode/tasks.json and launch.json so the user can build the project with a click of a button in VSCode's Run & Debug UI.
+  \033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory
+  
+In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. \033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.\n"
   xit
 fi
 
