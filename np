@@ -11,7 +11,7 @@ xit() {
 
 nprint() {
   txt=$1
-  printf "$txt" | fmt -s -w $(tput cols)
+  printf "$txt" | fmt -s -w $(tput cols) # -g $(tput cols)
 }
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
