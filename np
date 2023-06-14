@@ -109,8 +109,8 @@ defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
 if [ -f "$rootdir/.np/project.json" ]; then
   nprint "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
-  rm -rfv .np
-  nprint "\nI deleted the .np directory for you, run me again!\n"
+  rm -rfv .np src
+  nprint "\nI deleted the junk for you, run me again!\n"
   xit
 fi
 
@@ -124,8 +124,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   mkdir -p .np
   echo $project_json | base64 -d >> .np/project.json # Extract project.json
   nprint "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
-  #mkdir -p src
-  #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
+  mkdir -p src
+  echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   nprint "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
   [ -f $defaults_path ] && {
     if [[ $dontusedefaults != 1 ]]; then
