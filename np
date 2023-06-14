@@ -9,8 +9,13 @@ xit() {
   exit 0
 }
 
+nprint() {
+  txt=$1
+  printf "$txt" | fmt -s -w $(tput cols)
+}
+
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-  txt="\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
+  nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
   -h | --help\t\tdisplay this help page
@@ -27,12 +32,11 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
 \033[4mOptions for existing projects:\033[0m
   -r | --regenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
 "
-  printf "$txt" | fmt -s -w $(tput cols)
   xit
 fi
 
 if [[ "$1" == "-v" || "$1" == "--version" ]]; then
-  printf "$scriptversion\n"
+  nprint "$scriptversion\n"
   xit
 fi
 
@@ -44,14 +48,14 @@ if [[ "$1" == "-o" || "$1" == "--other-defaults" ]]; then
   defaults_path=$2
   defaults_path=${defaults_path:="~/.config/np/defaults.json"}
   if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
-    printf "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
+    nprint "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
   else
-    printf "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
+    nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
   fi
 fi
 
 if [[ "$1" == "-d" || "$1" == "--documentation" ]]; then
-  txt="\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
+  nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
   \033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
   \033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: c89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23.
   \033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: c++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.
@@ -73,7 +77,6 @@ if [[ "$1" == "-d" || "$1" == "--documentation" ]]; then
   \033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory
   
 In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. \033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.\n"
-  printf "$txt" | fmt -s -w $(tput cols)
   xit
 fi
 
@@ -95,7 +98,7 @@ if [[ "$1" == "-m" || "$1" == "--make-defaults" ]]; then
   mkd_path=$2
   mkd_path=${mkd_path:=~/.config/np/defaults.json}
   echo $defaults_json | base64 -d >> $mkd_path
-  printf "Wrote new defaults file \033[38;2;241;255;71m$mkd_path\033[0m"
+  nprint "Wrote new defaults file \033[38;2;241;255;71m$mkd_path\033[0m"
   xit
 fi
 
@@ -104,28 +107,28 @@ defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
 
 if [ -f "$rootdir/.np/project.json" ]; then
-  printf "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
+  nprint "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
   rm -rfv .np
-  printf "\nI deleted the .np directory for you, run me again!\n"
+  nprint "\nI deleted the .np directory for you, run me again!\n"
   xit
 fi
 
-printf "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
+nprint "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
 read -n 1 -r
 if [[ $REPLY =~ ^[Nn]$ ]]; then
-  printf "\nThen why did you launch this script???\n"
+  nprint "\nThen why did you launch this script???\n"
   xit
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   mkdir -p .np
   echo $project_json | base64 -d >> .np/project.json # Extract project.json
-  printf "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
+  nprint "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
   #mkdir -p src
   #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
-  printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
+  nprint "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
   [ -f $defaults_path ] && {
     if [[ $dontusedefaults != 1 ]]; then
-      printf "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
+      nprint "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
       cd .np
 
       # Project name
@@ -133,28 +136,28 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       if [[ $d_projectname != "null" ]]; then
         jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mproject name\033[0m\n"
+      nprint "Finished configuring \033[1mproject name\033[0m\n"
 
       # C standard version
       d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
       if [[ $d_cstdversion != "null" ]]; then
         jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mC standard version\033[0m\n"
+      nprint "Finished configuring \033[1mC standard version\033[0m\n"
 
       # C++ standard version
       d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
       if [[ $d_cppstdversion != "null" ]]; then
         jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mC++ standard version\033[0m\n"
+      nprint "Finished configuring \033[1mC++ standard version\033[0m\n"
 
       # Number of compilation threads
       d_threads=$(jq -r '.d_threads' $defaults_path)
       if [[ $d_threads != "null" ]]; then
         jq --tab --argjson d_threads "$d_threads" '.threads = $d_threads' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
+      nprint "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
 
       # VSCode integration toggle
       d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
@@ -163,14 +166,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       else
         jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
+      nprint "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
 
       # VSCode projects folder
       d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
       if [[ $d_vscodefolder != "null" ]]; then
         jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-      printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
+      nprint "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
 
       # Build configurations (the hard part)
       if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
@@ -180,7 +183,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       while true; do
         n_iter=$((n_iter+1))
         if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
-          printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
+          nprint "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
           ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
           jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
         else
@@ -191,9 +194,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
       sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
     fi
   }
-  printf "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
+  nprint "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
   xit
 fi
 
-printf "\033[0m"
+nprint "\033[0m"
 exit 0
