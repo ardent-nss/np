@@ -10,7 +10,7 @@ xit() {
 }
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-  printf "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
+  txt="\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
   -h | --help\t\tdisplay this help page
@@ -21,12 +21,13 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
 
 \033[4mNew project generation options:\033[0m
   -n | --no-defaults\tDon't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
-  -o | --other-defaults\tUse a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m. It doesn't need to be named defaults.json specifically and can be placed anywhere on disk as long as the script has read access.
+  -o | --other-defaults\tUse a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m.
                  [PATH]\tIf you specify something like \`foobar\` in place of PATH, the script will assume you mean ~/.config/np/foobar.json.
 
 \033[4mOptions for existing projects:\033[0m
   -r | --regenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
 "
+  printf "$txt" | fmt -s -w $(tput cols)
   xit
 fi
 
@@ -50,7 +51,7 @@ if [[ "$1" == "-o" || "$1" == "--other-defaults" ]]; then
 fi
 
 if [[ "$1" == "-d" || "$1" == "--documentation" ]]; then
-  printf "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
+  txt="\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
   \033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
   \033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: c89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23.
   \033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: c++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.
@@ -72,6 +73,7 @@ if [[ "$1" == "-d" || "$1" == "--documentation" ]]; then
   \033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory
   
 In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. \033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.\n"
+  printf "$txt" | fmt -s -w $(tput cols)
   xit
 fi
 
