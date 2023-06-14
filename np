@@ -121,72 +121,74 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   #mkdir -p src
   #echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
   printf "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-  if [[ $dontusedefaults != 1 ]]; then
-    printf "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
-    cd .np
+  [ -f $defaults_path ] && {
+    if [[ $dontusedefaults != 1 ]]; then
+      printf "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
+      cd .np
 
-    # Project name
-    d_projectname=$(jq -r '.d_projectname' $defaults_path)
-    if [[ $d_projectname != "null" ]]; then
-      jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mproject name\033[0m\n"
-
-    # C standard version
-    d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
-    if [[ $d_cstdversion != "null" ]]; then
-      jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mC standard version\033[0m\n"
-
-    # C++ standard version
-    d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
-    if [[ $d_cppstdversion != "null" ]]; then
-      jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mC++ standard version\033[0m\n"
-
-    # Number of compilation threads
-    d_threads=$(jq -r '.d_threads' $defaults_path)
-    if [[ $d_threads != "null" ]]; then
-      jq --tab --argjson d_threads "$d_threads" '.threads = $d_threads' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
-
-    # VSCode integration toggle
-    d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
-    if [[ $d_vscodeintegration == "true" ]]; then
-      jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    else
-      jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
-
-    # VSCode projects folder
-    d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
-    if [[ $d_vscodefolder != "null" ]]; then
-      jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-    fi
-    printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
-
-    # Build configurations (the hard part)
-    if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
-      jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
-    fi
-    n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
-    while true; do
-      n_iter=$((n_iter+1))
-      if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
-        printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
-        ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
-        jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      else
-        echo "No build configurations left to copy."
-        break
+      # Project name
+      d_projectname=$(jq -r '.d_projectname' $defaults_path)
+      if [[ $d_projectname != "null" ]]; then
+        jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
       fi
-    done
-    sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
-  fi
+      printf "Finished configuring \033[1mproject name\033[0m\n"
+
+      # C standard version
+      d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
+      if [[ $d_cstdversion != "null" ]]; then
+        jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      fi
+      printf "Finished configuring \033[1mC standard version\033[0m\n"
+
+      # C++ standard version
+      d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
+      if [[ $d_cppstdversion != "null" ]]; then
+        jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      fi
+      printf "Finished configuring \033[1mC++ standard version\033[0m\n"
+
+      # Number of compilation threads
+      d_threads=$(jq -r '.d_threads' $defaults_path)
+      if [[ $d_threads != "null" ]]; then
+        jq --tab --argjson d_threads "$d_threads" '.threads = $d_threads' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      fi
+      printf "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
+
+      # VSCode integration toggle
+      d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
+      if [[ $d_vscodeintegration == "true" ]]; then
+        jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      else
+        jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      fi
+      printf "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
+
+      # VSCode projects folder
+      d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
+      if [[ $d_vscodefolder != "null" ]]; then
+        jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+      fi
+      printf "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
+
+      # Build configurations (the hard part)
+      if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
+        jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+      fi
+      n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
+      while true; do
+        n_iter=$((n_iter+1))
+        if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
+          printf "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
+          ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
+          jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+        else
+          echo "No build configurations left to copy."
+          break
+        fi
+      done
+      sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
+    fi
+  }
   printf "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
   xit
 fi
