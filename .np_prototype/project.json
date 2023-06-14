@@ -28,6 +28,9 @@
       "libdirs": [
         "np_libdirs"
       ],
+      "ldargs": [
+        "np_ldargs"
+      ],
       "ldlibs": [
         "np_ldlibs"
       ]
