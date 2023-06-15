@@ -15,7 +15,7 @@ nprint() {
 }
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-  nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at https://github.com/HackerDaGreat57/np.
+  nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
   -h | --help\t\tdisplay this help page

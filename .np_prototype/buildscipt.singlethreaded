@@ -1,0 +1,27 @@
+#!/bin/bash
+# Build script for cpp_playground
+
+rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
+projectname=cpp_playground
+
+xit() {
+  printf "\033[0m" # Reset terminal colors for dumb shells
+  exit 0
+}
+
+nprint() {
+  txt=$1
+  printf "$txt" | fmt -s -w $(tput cols) # -g $(tput cols)
+}
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  nprint "This is the build script for \033[1m${projectname}\033[0m.
+Make sure to regenerate this script every time \033[38;2;57;255;60m.np/project.json\033[0m is modified.\n
+\033[4mGeneral options:\033[0m
+  -h | --help\t\tdisplay this help page
+  \033[1m-b\033[0m | \033[1m--build\t\tbuild the project (this executes even if no arguments are passed)\033[0m
+  -v | --verify\t\tensure that hashes of all current source files match hashes saved during last build
+  -f | --force-rebuild\tforce rebuild all source files even if they haven't changed from the last build
+"
+  xit
+fi

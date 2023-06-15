@@ -4,9 +4,7 @@ np is a build system for C/C++, made from scratch in Bash. Under early developme
 
 ## Help!! My terminal can't handle all the fancy formatting escape sequences in your script.
 
-I'd say that's more of a skill issue.
-
-At the ***very*** least, your shell should make everything look discolored, not literally print out the escape sequences. This is how bash 5.2 behaves On My Machine™. Coloring and formatting in the script is purely for aesthetics anyway, you'll do just fine without; it's just that a lot of us prefer half decent looking TUIs these days.
+I'd say that's more of a skill issue. Most shells should make everything look discolored, not literally print out the escape sequences. This is how bash 5.2 behaves On My Machine™. Coloring and formatting in the script is purely for aesthetics anyway, you'll do just fine without; it's just that a lot of us prefer half decent looking TUIs these days.
 
 ## Well guess what, my terminal doesn't support Unicode either!
 
