@@ -1,15 +1,17 @@
 {
-	"projectname": "cpp_playground",
+	"projectname": "demo_project",
 	"cstdversion": "gnu23",
 	"cppstdversion": "gnu++23",
 	"threads": 4,
 	"configurations": [
 		{
-			"configname": "cpp_playground_la64",
+			"configname": "demo_project_la64",
 			"os": "linux",
 			"arch": "arm64",
 			"gcc": "gcc",
 			"g++": "g++",
+			"bindir": "bin/la64",
+      "objdir": "obj/la64",
 			"gccargs": [
 				"-Wall",
 				"-Wextra",
@@ -48,11 +50,13 @@
 			"ldlibs": []
 		},
 		{
-			"configname": "cpp_project_lx64",
+			"configname": "demo_project_lx64",
 			"os": "linux",
 			"arch": "x86_64",
 			"gcc": "gcc",
 			"g++": "g++",
+			"bindir": "bin/lx64",
+      "objdir": "obj/lx64",
 			"gccargs": [
 				"-Wall",
 				"-Wextra",
