@@ -10,6 +10,8 @@
       "d_arch": "np_arch",
       "d_gcc": "np_gcc",
       "d_g++": "np_gpp",
+      "d_bindir": "np_bindir",
+      "d_objdir": "np_objdir",
       "d_gccargs": [
         "np_gccargs"
       ],
