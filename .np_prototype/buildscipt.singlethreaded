@@ -19,9 +19,13 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
 Make sure to regenerate this script every time \033[38;2;57;255;60m.np/project.json\033[0m is modified.\n
 \033[4mGeneral options:\033[0m
   -h | --help\t\tdisplay this help page
+
+\033[4mBuild options:\033[0m
   \033[1m-b\033[0m | \033[1m--build\t\tbuild the project (this executes even if no arguments are passed)\033[0m
-  -v | --verify\t\tensure that hashes of all current source files match hashes saved during last build
+  -v | --verify\t\tensure that current hashes of all source files match hashes saved during last build
   -f | --force-rebuild\tforce rebuild all source files even if they haven't changed from the last build
+  -l | --library-build\tbuild libraries from scratch. All rebuilt if argument is not present.
+                [LIBS]\tspecify libraries to (re)build in [LIBS]
 "
   xit
 fi
