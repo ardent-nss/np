@@ -41,16 +41,20 @@
   "d_dependencies": [
     {
       "d_libname": "np_libname",
-      "d_libdetails": {
-        "d_libpath": "np_libpath",
-        "d_libtarball": "np_libtarball",
-        "d_libdir": "np_libfolder",
-        "d_libdownloads": [
-          "np_libdownloads"
-        ]
-      },
+      "d_libpath": "np_libpath",
+      "d_libarchive": "np_libarchive",
+      "d_libdir": "np_libfolder",
       "d_libbuildcommands": [
         "np_libbuildcommands"
+      ],
+      "d_libexistverification": [
+        "np_libexistverification"
+      ],
+      "d_libdownloads": [
+        {
+          "d_libdownloadurl": "np_libdownloadurl",
+          "d_libarchivetype": "np_libarchivetype"
+        }
       ]
     }
   ],
