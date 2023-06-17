@@ -61,6 +61,22 @@
       ]
     }
   ],
+  "d_bundles": [
+		{
+			"d_bundlename": "np_bundlename",
+			"d_configurationstobuild": [
+				"np_configurationstobuild"
+			]
+		}
+	],
+	"d_megabundles": [
+		{
+			"d_megabundlename": "np_megabundlename",
+			"d_bundlestobuild": [
+				"np_bundlestobuild"
+			]
+		}
+	],
   "d_vscodeintegration": false,
   "d_vscodefolder": "np_vscf"
 }

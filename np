@@ -99,24 +99,30 @@ if [[ "$1" == "-d" || "$1" == "--documentation" || "$2" == "-d" || "$2" == "--do
 		\033[38;2;141;218;255mlibarchive\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the library's source code tarball (only tarballs are supported). It will be extracted into \033[38;2;141;218;255mlibdir\033[0m. If you specify a file that doesn't exist, the script will try to download (HTTP GET) the archive from each entry in \033[38;2;141;218;255mlibdownloads\033[0m, in top-to-bottom order.\n
 		\033[38;2;141;218;255mlibdir\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the directory where the source code archive will be extracted to.\n
 		\033[38;2;141;218;255mlibbuildcommands\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each denote individual commands run in \033[38;2;141;218;255mlibpath\033[0m or \033[38;2;141;218;255mlibdir\033[0m (whichever one applies) to build the external library. This can point to a full-fledged shell script.\n
-		\033[38;2;141;218;255mlibexistverification\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of paths that each point to individual library files that need to be present. If even one of them isn't there then the script will try to build the library again. If all are present then it will proceed to building the next library or building a configuration.\n
+		\033[38;2;141;218;255mlibexistverification\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of paths that each point to individual library files that need to be present. If all of them aren't there then the script will try to build the library again. If all are present then it will proceed to building the next library or building a configuration. You can use \033[38;2;141;218;255mlibpath\033[0m and \033[38;2;141;218;255mlibdir\033[0m as variables by typing them literally inside the paths: \033[38;2;128;255;57m{libpath}\033[0m,\033[38;2;128;255;57m{libdir}\033[0m.\n
 		\033[38;2;141;218;255mlibdownloads\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that denote individual URLs that the script can try to download archives from to extract. \033[1mDocumentation for array entries:\033[0m\n
 			\033[38;2;141;218;255mlibdownloadurl\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the URL to download the archive from (can be any protocol that \033[38;2;128;255;57mwget\033[0m supports)\n
 			\033[38;2;141;218;255mlibarchivetype\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the type of archive that the downloaded file is. Can be one of the following: \033[38;2;225;225;225mtar,bzip2,gzip,zip,7z\033[0m. Make sure you have the proper decompressor installed!!\n
+	\033[38;2;141;218;255mbundles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a bundle. A bundle is a group of configurations that are built all at once. \033[1mDocumentation for array entries:\033[0m\n
+		\033[38;2;141;218;255mbundle\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the bundle. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255mconfigurationstobuild\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each contain names of individual configurations to be built in this bundle.\n
+	\033[38;2;141;218;255mmegabundles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a megabundle. A megabundle is a group of \033[3mbundles\033[0m that are built all at once. \033[1mDocumentation for array entries:\033[0m\n
+		\033[38;2;141;218;255mmegabundle\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the megabundle. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255mconfigurationstobuild\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each contain names of individual bundles to be built in this megabundle.\n
 	\033[38;2;141;218;255mvscodeintegration\033[0m [\033[38;2;255;141;142m\033[3mboolean\033[0m]: whether to activate integration with Visual Studio Code or not. If true, it will modify {projectrootdir}/.vscode/tasks.json and launch.json so the user can build the project with a click of a button in VSCode's Run & Debug UI.\n
 	\033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory\n
 
-In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. \033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.\n" | less
+In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. (\033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.)\n" | less
 	xit
 fi
 
 # Embedded files (decoded from base64 just before writing to disk)
 project_json=$(cat <<EOF
-ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAidGhyZWFkcyI6IDAsCiAgImNvbmZpZ3VyYXRpb25zIjogWwogICAgewogICAgICAiY29uZmlnbmFtZSI6ICJucF9jb25mbmFtZSIsCgkJCSJ0eXBlIjogIm5wX3R5cGUiLAogICAgICAib3MiOiAibnBfb3MiLAogICAgICAiYXJjaCI6ICJucF9hcmNoIiwKICAgICAgImdjYyI6ICJucF9nY2MiLAogICAgICAiZysrIjogIm5wX2dwcCIsCiAgICAgICJiaW5kaXIiOiAibnBfYmluZGlyIiwKICAgICAgIm9iamRpciI6ICJucF9vYmpkaXIiLAogICAgICAiZ2NjYXJncyI6IFsKICAgICAgICAibnBfZ2NjYXJncyIKICAgICAgXSwKICAgICAgImdwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJzb3VyY2VmaWxlcyI6IFsKICAgICAgICAibnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJjaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NpbmNzIgogICAgICBdLAogICAgICAiY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJsaWJkaXJzIjogWwogICAgICAgICJucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRhcmdzIjogWwogICAgICAgICJucF9sZGFyZ3MiCiAgICAgIF0sCiAgICAgICJsZGxpYnMiOiBbCiAgICAgICAgIm5wX2xkbGlicyIKICAgICAgXSwKCQkJImFmdGVyY29tcGlsYXRpb25vdmVycmlkZSI6IFsKCQkJCSJucF9hZnRlcmNvbXBpbGF0aW9ub3ZlcnJpZGUiCgkJCV0KICAgIH0KICBdLAogICJkZXBlbmRlbmNpZXMiOiBbCiAgICB7CiAgICAgICJsaWJuYW1lIjogIm5wX2xpYm5hbWUiLAogICAgICAibGlicGF0aCI6ICJucF9saWJwYXRoIiwKICAgICAgImxpYmFyY2hpdmUiOiAibnBfbGliYXJjaGl2ZSIsCiAgICAgICJsaWJkaXIiOiAibnBfbGliZm9sZGVyIiwKICAgICAgImxpYmJ1aWxkY29tbWFuZHMiOiBbCiAgICAgICAgIm5wX2xpYmJ1aWxkY29tbWFuZHMiCiAgICAgIF0sCiAgICAgICJsaWJleGlzdHZlcmlmaWNhdGlvbiI6IFsKICAgICAgICAibnBfbGliZXhpc3R2ZXJpZmljYXRpb24iCiAgICAgIF0sCiAgICAgICJsaWJkb3dubG9hZHMiOiBbCiAgICAgICAgewogICAgICAgICAgImxpYmRvd25sb2FkdXJsIjogIm5wX2xpYmRvd25sb2FkdXJsIiwKICAgICAgICAgICJsaWJhcmNoaXZldHlwZSI6ICJucF9saWJhcmNoaXZldHlwZSIKICAgICAgICB9CiAgICAgIF0KICAgIH0KICBdLAogICJ2c2NvZGVpbnRlZ3JhdGlvbiI6IGZhbHNlLAogICJ2c2NvZGVmb2xkZXIiOiAibnBfdnNjZiIKfQ==
+ewogICJwcm9qZWN0bmFtZSI6ICJucF9uYW1lIiwKICAiY3N0ZHZlcnNpb24iOiAibnBfY3N0ZHZlciIsCiAgImNwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAidGhyZWFkcyI6IDAsCiAgImNvbmZpZ3VyYXRpb25zIjogWwogICAgewogICAgICAiY29uZmlnbmFtZSI6ICJucF9jb25mbmFtZSIsCgkJCSJ0eXBlIjogIm5wX3R5cGUiLAogICAgICAib3MiOiAibnBfb3MiLAogICAgICAiYXJjaCI6ICJucF9hcmNoIiwKICAgICAgImdjYyI6ICJucF9nY2MiLAogICAgICAiZysrIjogIm5wX2dwcCIsCiAgICAgICJiaW5kaXIiOiAibnBfYmluZGlyIiwKICAgICAgIm9iamRpciI6ICJucF9vYmpkaXIiLAogICAgICAiZ2NjYXJncyI6IFsKICAgICAgICAibnBfZ2NjYXJncyIKICAgICAgXSwKICAgICAgImdwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJzb3VyY2VmaWxlcyI6IFsKICAgICAgICAibnBfc3JjZmlsZXMiCiAgICAgIF0sCiAgICAgICJjaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NpbmNzIgogICAgICBdLAogICAgICAiY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJsaWJkaXJzIjogWwogICAgICAgICJucF9saWJkaXJzIgogICAgICBdLAogICAgICAibGRhcmdzIjogWwogICAgICAgICJucF9sZGFyZ3MiCiAgICAgIF0sCiAgICAgICJsZGxpYnMiOiBbCiAgICAgICAgIm5wX2xkbGlicyIKICAgICAgXSwKCQkJImFmdGVyY29tcGlsYXRpb25vdmVycmlkZSI6IFsKCQkJCSJucF9hZnRlcmNvbXBpbGF0aW9ub3ZlcnJpZGUiCgkJCV0KICAgIH0KICBdLAogICJkZXBlbmRlbmNpZXMiOiBbCiAgICB7CiAgICAgICJsaWJuYW1lIjogIm5wX2xpYm5hbWUiLAogICAgICAibGlicGF0aCI6ICJucF9saWJwYXRoIiwKICAgICAgImxpYmFyY2hpdmUiOiAibnBfbGliYXJjaGl2ZSIsCiAgICAgICJsaWJkaXIiOiAibnBfbGliZm9sZGVyIiwKICAgICAgImxpYmJ1aWxkY29tbWFuZHMiOiBbCiAgICAgICAgIm5wX2xpYmJ1aWxkY29tbWFuZHMiCiAgICAgIF0sCiAgICAgICJsaWJleGlzdHZlcmlmaWNhdGlvbiI6IFsKICAgICAgICAibnBfbGliZXhpc3R2ZXJpZmljYXRpb24iCiAgICAgIF0sCiAgICAgICJsaWJkb3dubG9hZHMiOiBbCiAgICAgICAgewogICAgICAgICAgImxpYmRvd25sb2FkdXJsIjogIm5wX2xpYmRvd25sb2FkdXJsIiwKICAgICAgICAgICJsaWJhcmNoaXZldHlwZSI6ICJucF9saWJhcmNoaXZldHlwZSIKICAgICAgICB9CiAgICAgIF0KICAgIH0KICBdLAoJImJ1bmRsZXMiOiBbCgkJewoJCQkiYnVuZGxlbmFtZSI6ICJucF9idW5kbGVuYW1lIiwKCQkJImNvbmZpZ3VyYXRpb25zdG9idWlsZCI6IFsKCQkJCSJucF9jb25maWd1cmF0aW9uc3RvYnVpbGQiCgkJCV0KCQl9CgldLAoJIm1lZ2FidW5kbGVzIjogWwoJCXsKCQkJIm1lZ2FidW5kbGVuYW1lIjogIm5wX21lZ2FidW5kbGVuYW1lIiwKCQkJImJ1bmRsZXN0b2J1aWxkIjogWwoJCQkJIm5wX2J1bmRsZXN0b2J1aWxkIgoJCQldCgkJfQoJXSwKICAidnNjb2RlaW50ZWdyYXRpb24iOiBmYWxzZSwKICAidnNjb2RlZm9sZGVyIjogIm5wX3ZzY2YiCn0=
 EOF
 )
 defaults_json=$(cat <<EOF
-ewogICJkX3Byb2plY3RuYW1lIjogIm5wX25hbWUiLAogICJkX2NzdGR2ZXJzaW9uIjogIm5wX2NzdGR2ZXIiLAogICJkX2NwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiZF90aHJlYWRzIjogMCwKICAiZF9jb25maWd1cmF0aW9ucyI6IFsKICAgIHsKICAgICAgImRfY29uZmlnbmFtZSI6ICJucF9jb25mbmFtZSIsCiAgICAgICJkX29zIjogIm5wX29zIiwKICAgICAgImRfYXJjaCI6ICJucF9hcmNoIiwKICAgICAgImRfZ2NjIjogIm5wX2djYyIsCiAgICAgICJkX2crKyI6ICJucF9ncHAiLAogICAgICAiZF9iaW5kaXIiOiAibnBfYmluZGlyIiwKICAgICAgImRfb2JqZGlyIjogIm5wX29iamRpciIsCiAgICAgICJkX2djY2FyZ3MiOiBbCiAgICAgICAgIm5wX2djY2FyZ3MiCiAgICAgIF0sCiAgICAgICJkX2dwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJkX3NvdXJjZWZpbGVzIjogWwogICAgICAgICJucF9zcmNmaWxlcyIKICAgICAgXSwKICAgICAgImRfY2luY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jaW5jcyIKICAgICAgXSwKICAgICAgImRfY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJkX2xpYmRpcnMiOiBbCiAgICAgICAgIm5wX2xpYmRpcnMiCiAgICAgIF0sCiAgICAgICJsZGFyZ3MiOiBbCiAgICAgICAgIm5wX2xkYXJncyIKICAgICAgXSwKICAgICAgImRfbGRsaWJzIjogWwogICAgICAgICJucF9sZGxpYnMiCiAgICAgIF0sCiAgICAgICJkX2FmdGVyY29tcGlsYXRpb25vdmVycmlkZSI6IFsKCQkJCSJucF9hZnRlcmNvbXBpbGF0aW9ub3ZlcnJpZGUiCgkJCV0KICAgIH0KICBdLAogICJkX2RlcGVuZGVuY2llcyI6IFsKICAgIHsKICAgICAgImRfbGlibmFtZSI6ICJucF9saWJuYW1lIiwKICAgICAgImRfbGlicGF0aCI6ICJucF9saWJwYXRoIiwKICAgICAgImRfbGliYXJjaGl2ZSI6ICJucF9saWJhcmNoaXZlIiwKICAgICAgImRfbGliZGlyIjogIm5wX2xpYmZvbGRlciIsCiAgICAgICJkX2xpYmJ1aWxkY29tbWFuZHMiOiBbCiAgICAgICAgIm5wX2xpYmJ1aWxkY29tbWFuZHMiCiAgICAgIF0sCiAgICAgICJkX2xpYmV4aXN0dmVyaWZpY2F0aW9uIjogWwogICAgICAgICJucF9saWJleGlzdHZlcmlmaWNhdGlvbiIKICAgICAgXSwKICAgICAgImRfbGliZG93bmxvYWRzIjogWwogICAgICAgIHsKICAgICAgICAgICJkX2xpYmRvd25sb2FkdXJsIjogIm5wX2xpYmRvd25sb2FkdXJsIiwKICAgICAgICAgICJkX2xpYmFyY2hpdmV0eXBlIjogIm5wX2xpYmFyY2hpdmV0eXBlIgogICAgICAgIH0KICAgICAgXQogICAgfQogIF0sCiAgImRfdnNjb2RlaW50ZWdyYXRpb24iOiBmYWxzZSwKICAiZF92c2NvZGVmb2xkZXIiOiAibnBfdnNjZiIKfQ==
+ewogICJkX3Byb2plY3RuYW1lIjogIm5wX25hbWUiLAogICJkX2NzdGR2ZXJzaW9uIjogIm5wX2NzdGR2ZXIiLAogICJkX2NwcHN0ZHZlcnNpb24iOiAibnBfY3Bwc3RkdmVyIiwKICAiZF90aHJlYWRzIjogMCwKICAiZF9jb25maWd1cmF0aW9ucyI6IFsKICAgIHsKICAgICAgImRfY29uZmlnbmFtZSI6ICJucF9jb25mbmFtZSIsCiAgICAgICJkX29zIjogIm5wX29zIiwKICAgICAgImRfYXJjaCI6ICJucF9hcmNoIiwKICAgICAgImRfZ2NjIjogIm5wX2djYyIsCiAgICAgICJkX2crKyI6ICJucF9ncHAiLAogICAgICAiZF9iaW5kaXIiOiAibnBfYmluZGlyIiwKICAgICAgImRfb2JqZGlyIjogIm5wX29iamRpciIsCiAgICAgICJkX2djY2FyZ3MiOiBbCiAgICAgICAgIm5wX2djY2FyZ3MiCiAgICAgIF0sCiAgICAgICJkX2dwcGFyZ3MiOiBbCiAgICAgICAgIm5wX2dwcGFyZ3MiCiAgICAgIF0sCiAgICAgICJkX3NvdXJjZWZpbGVzIjogWwogICAgICAgICJucF9zcmNmaWxlcyIKICAgICAgXSwKICAgICAgImRfY2luY2x1ZGVkaXJzIjogWwogICAgICAgICJucF9jaW5jcyIKICAgICAgXSwKICAgICAgImRfY3BwaW5jbHVkZWRpcnMiOiBbCiAgICAgICAgIm5wX2NwcGluY3MiCiAgICAgIF0sCiAgICAgICJkX2xpYmRpcnMiOiBbCiAgICAgICAgIm5wX2xpYmRpcnMiCiAgICAgIF0sCiAgICAgICJsZGFyZ3MiOiBbCiAgICAgICAgIm5wX2xkYXJncyIKICAgICAgXSwKICAgICAgImRfbGRsaWJzIjogWwogICAgICAgICJucF9sZGxpYnMiCiAgICAgIF0sCiAgICAgICJkX2FmdGVyY29tcGlsYXRpb25vdmVycmlkZSI6IFsKCQkJCSJucF9hZnRlcmNvbXBpbGF0aW9ub3ZlcnJpZGUiCgkJCV0KICAgIH0KICBdLAogICJkX2RlcGVuZGVuY2llcyI6IFsKICAgIHsKICAgICAgImRfbGlibmFtZSI6ICJucF9saWJuYW1lIiwKICAgICAgImRfbGlicGF0aCI6ICJucF9saWJwYXRoIiwKICAgICAgImRfbGliYXJjaGl2ZSI6ICJucF9saWJhcmNoaXZlIiwKICAgICAgImRfbGliZGlyIjogIm5wX2xpYmZvbGRlciIsCiAgICAgICJkX2xpYmJ1aWxkY29tbWFuZHMiOiBbCiAgICAgICAgIm5wX2xpYmJ1aWxkY29tbWFuZHMiCiAgICAgIF0sCiAgICAgICJkX2xpYmV4aXN0dmVyaWZpY2F0aW9uIjogWwogICAgICAgICJucF9saWJleGlzdHZlcmlmaWNhdGlvbiIKICAgICAgXSwKICAgICAgImRfbGliZG93bmxvYWRzIjogWwogICAgICAgIHsKICAgICAgICAgICJkX2xpYmRvd25sb2FkdXJsIjogIm5wX2xpYmRvd25sb2FkdXJsIiwKICAgICAgICAgICJkX2xpYmFyY2hpdmV0eXBlIjogIm5wX2xpYmFyY2hpdmV0eXBlIgogICAgICAgIH0KICAgICAgXQogICAgfQogIF0sCiAgImRfYnVuZGxlcyI6IFsKCQl7CgkJCSJkX2J1bmRsZW5hbWUiOiAibnBfYnVuZGxlbmFtZSIsCgkJCSJkX2NvbmZpZ3VyYXRpb25zdG9idWlsZCI6IFsKCQkJCSJucF9jb25maWd1cmF0aW9uc3RvYnVpbGQiCgkJCV0KCQl9CgldLAoJImRfbWVnYWJ1bmRsZXMiOiBbCgkJewoJCQkiZF9tZWdhYnVuZGxlbmFtZSI6ICJucF9tZWdhYnVuZGxlbmFtZSIsCgkJCSJkX2J1bmRsZXN0b2J1aWxkIjogWwoJCQkJIm5wX2J1bmRsZXN0b2J1aWxkIgoJCQldCgkJfQoJXSwKICAiZF92c2NvZGVpbnRlZ3JhdGlvbiI6IGZhbHNlLAogICJkX3ZzY29kZWZvbGRlciI6ICJucF92c2NmIgp9
 EOF
 )
 template_cpp=$(cat <<EOF
@@ -239,10 +245,50 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 					break
 				fi
 			done
-			sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
 
+			# Bundles
+			if [[ $(jq --tab '.d_bundles[0]' $defaults_path) != "null" ]]; then
+				jq '.bundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+			fi
+			n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
+			while true; do
+				n_iter=$((n_iter+1))
+				if [[ $(jq --tab --arg n_iter $n_iter '.d_bundles[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
+					nprint "Copying \033[1mbundle\033[0m #$n_iter...\n"
+					ext_dep=$(jq --tab --arg n_iter $n_iter '.d_bundles[$n_iter|tonumber]' $defaults_path)
+					jq --tab --argjson ext_dep "$ext_dep" '.bundles += [$ext_dep]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+				else
+					echo "No bundles left to copy."
+					break
+				fi
+			done
+
+			# Megabundles (oooh)
+			if [[ $(jq --tab '.d_megabundles[0]' $defaults_path) != "null" ]]; then
+				jq '.megabundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+			fi
+			n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
+			while true; do
+				n_iter=$((n_iter+1))
+				if [[ $(jq --tab --arg n_iter $n_iter '.d_megabundles[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
+					nprint "Copying \033[1mmegabundle\033[0m #$n_iter...\n"
+					ext_dep=$(jq --tab --arg n_iter $n_iter '.d_megabundles[$n_iter|tonumber]' $defaults_path)
+					jq --tab --argjson ext_dep "$ext_dep" '.megabundles += [$ext_dep]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+				else
+					echo "No megabundles left to copy."
+					break
+				fi
+			done
+
+			sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
 			if [[ $(jq --tab '.d_dependencies | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template library entry because it's not mandatory
 				jq --tab '.dependencies = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			if [[ $(jq --tab '.d_bundles | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template bundle entry because it's not mandatory
+				jq --tab '.bundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			if [[ $(jq --tab '.d_megabundles | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template megabundle entry because it's not mandatory
+				jq --tab '.megabundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
 			fi
 		fi
 	}

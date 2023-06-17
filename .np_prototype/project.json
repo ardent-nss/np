@@ -62,6 +62,22 @@
       ]
     }
   ],
+	"bundles": [
+		{
+			"bundlename": "np_bundlename",
+			"configurationstobuild": [
+				"np_configurationstobuild"
+			]
+		}
+	],
+	"megabundles": [
+		{
+			"megabundlename": "np_megabundlename",
+			"bundlestobuild": [
+				"np_bundlestobuild"
+			]
+		}
+	],
   "vscodeintegration": false,
   "vscodefolder": "np_vscf"
 }
