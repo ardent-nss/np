@@ -6,6 +6,7 @@
   "configurations": [
     {
       "configname": "np_confname",
+			"type": "np_type",
       "os": "np_os",
       "arch": "np_arch",
       "gcc": "np_gcc",
@@ -35,7 +36,10 @@
       ],
       "ldlibs": [
         "np_ldlibs"
-      ]
+      ],
+			"aftercompilationoverride": [
+				"np_aftercompilationoverride"
+			]
     }
   ],
   "dependencies": [
