@@ -5,97 +5,107 @@ scriptversion=v0.0.1.0
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
 if [ -t 1 ]; then
-  noformat=0
+	noformat=0
 else
-  noformat=1
+	noformat=1
 fi
 
 if [[ "$1" == "-f" || "$1" == "--no-formatting" || "$2" == "-f" || "$2" == "--no-formatting" || "$3" == "-f" || "$3" == "--no-formatting" || "$4" == "-f" || "$4" == "--no-formatting" || "$5" == "-f" || "$5" == "--no-formatting" ]]; then
-  noformat=1
+	noformat=1
 fi
 
 xit() {
-  if [ $noformat == 0 ]; then
-    printf "\033[0m" # Reset terminal colors for dumb shells
-  fi
-  exit 0
+	if [ $noformat == 0 ]; then
+		printf "\033[0m" # Reset terminal colors for dumb shells
+	fi
+	exit 0
 }
 
 nprint() { # printf with rudimentary line wrapping
-  txt=$1
-  if [ $noformat == 0 ]; then
-    printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols)
-  else
-    printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
-  fi
+	txt=$1
+	if [ $noformat == 0 ]; then
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols)
+	else
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
+	fi
 }
 
 if [[ "$1" == "-h" || "$1" == "--help" || "$2" == "-h" || "$2" == "--help" || "$3" == "-h" || "$3" == "--help" || "$4" == "-h" || "$4" == "--help" || "$5" == "-h" || "$5" == "--help" ]]; then
-  nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
+	nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
-  -h | --\033[4mh\033[0melp\t\tdisplay this help page
-  -v | --\033[4mv\033[0mersion\tdisplay the version number of the script (${scriptversion})
-  -f | --no-\033[4mf\033[0mormatting\tdo not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  -d | --\033[4md\033[0mocumentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
-  -m | --\033[4mm\033[0make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
-                [PATH]\tSpecify a specific place to put the generated file by typing PATH
+	-h | --\033[4mh\033[0melp\t\tdisplay this help page
+	-v | --\033[4mv\033[0mersion\tdisplay the version number of the script (${scriptversion})
+	-f | --no-\033[4mf\033[0mormatting\tdo not use ANSI formatting in standard output (automatically disabled if not writing to tty)
+	-d | --\033[4md\033[0mocumentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
+	-m | --\033[4mm\033[0make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+								[PATH]\tSpecify a specific place to put the generated file by typing PATH
 
 \033[4mNew project generation options:\033[0m
-  -n | --\033[4mn\033[0mo-defaults\tDon't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
-  -o | --\033[4mo\033[0mther-defaults\tUse a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m.
-                 [PATH]\tIf you specify something like \`foobar\` in place of PATH, the script will assume you mean \033[38;2;241;255;71m~/.config/np/foobar.json\033[0m.
+	-n | --\033[4mn\033[0mo-defaults\tDon't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
+	-o | --\033[4mo\033[0mther-defaults\tUse a defaults file other than \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m.
+								 [PATH]\tIf you specify something like \`foobar\` in place of PATH, the script will assume you mean \033[38;2;241;255;71m~/.config/np/foobar.json\033[0m.
 
 \033[4mOptions for existing projects:\033[0m
-  -r | --\033[4mr\033[0megenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
+	-r | --\033[4mr\033[0megenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
 " | less
-  xit
+	xit
 fi
 
 if [[ "$1" == "-v" || "$1" == "--version" || "$2" == "-v" || "$2" == "--version" || "$3" == "-v" || "$3" == "--version" || "$4" == "-v" || "$4" == "--version" || "$5" == "-v" || "$5" == "--version" ]]; then
-  nprint "$scriptversion\n"
-  xit
+	nprint "$scriptversion\n"
+	xit
 fi
 
 if [[ "$1" == "-n" || "$1" == "--no-defaults" || "$2" == "-n" || "$2" == "--no-defaults" || "$3" == "-n" || "$3" == "--no-defaults" || "$4" == "-n" || "$4" == "--no-defaults" || "$5" == "-n" || "$5" == "--no-defaults" ]]; then
-  dontusedefaults=1
+	dontusedefaults=1
 fi
 
 if [[ "$1" == "-o" || "$1" == "--other-defaults" || "$2" == "-o" || "$2" == "--other-defaults" || "$3" == "-o" || "$3" == "--other-defaults" || "$4" == "-o" || "$4" == "--other-defaults" || "$5" == "-o" || "$5" == "--other-defaults" ]]; then
-  defaults_path=$2
-  defaults_path=${defaults_path:="~/.config/np/defaults.json"}
-  if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
-    nprint "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
-  else
-    nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
-  fi
+	defaults_path=$2
+	defaults_path=${defaults_path:="~/.config/np/defaults.json"}
+	if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
+		nprint "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
+	else
+		nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
+	fi
 fi
 
 if [[ "$1" == "-d" || "$1" == "--documentation" || "$2" == "-d" || "$2" == "--documentation" || "$3" == "-d" || "$3" == "--documentation" || "$4" == "-d" || "$4" == "--documentation" || "$5" == "-d" || "$5" == "--documentation" ]]; then
-  nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:
-  \033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
-  \033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: c89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23.
-  \033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: c++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.
-  \033[38;2;141;218;255mthreads\033[0m [\033[38;2;215;50;205m\033[3minteger\033[0m]: the number of threads that will be used to compile the project. \033[3mIf it is 0, the script will automatically detect the number of available threads at runtime.\033[0m
-  \033[38;2;141;218;255mconfigurations\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain build configuration for the project, such as one for arm64 and one for x86_64. You can obviously make multiple configurations, that's why it's an array. \033[1mDocumentation for array entries:\033[0m
-    \033[38;2;141;218;255mconfigname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
-    \033[38;2;141;218;255mos\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's OS target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
-    \033[38;2;141;218;255march\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's processor architecture target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).
-    \033[38;2;141;218;255mgcc\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the gcc binary
-    \033[38;2;141;218;255mgpp\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the g++ binary
-    \033[38;2;141;218;255mgccargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to GCC. Each argument goes in a new entry.
-    \033[38;2;141;218;255mgppargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to G++. Each argument goes in a new entry.
-    \033[38;2;141;218;255msourcefiles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote paths to individual source code files to be compiled, relative to the root directory of the project (where .np/ is considered a subdirectory). Each file goes in a new entry.
-    \033[38;2;141;218;255mcincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C compiler. Each directory goes in a new entry.
-    \033[38;2;141;218;255mcppincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C++ compiler. Each directory goes in a new entry.
-    \033[38;2;141;218;255mlibdirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of library files to be made available to the linker. Each directory goes in a new entry.
-    \033[38;2;141;218;255mldargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to the linker (ld). Each argument goes in a new entry.
-    \033[38;2;141;218;255mldlibs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote the library files that need to be linked to the executable in -l{name} form. Each file goes in a new entry.
-  \033[38;2;141;218;255mvscodeintegration\033[0m [\033[38;2;255;141;142m\033[3mboolean\033[0m]: whether to activate integration with Visual Studio Code or not. If true, it will modify {projectrootdir}/.vscode/tasks.json and launch.json so the user can build the project with a click of a button in VSCode's Run & Debug UI.
-  \033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory
-  
+	nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:\n
+	\033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+	\033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: \033[38;2;225;225;225mc89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23\033[0m.\n
+	\033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: \033[38;2;225;225;225mc++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.\033[0m\n
+	\033[38;2;141;218;255mthreads\033[0m [\033[38;2;215;50;205m\033[3minteger\033[0m]: the number of threads that will be used to compile the project. \033[3mIf it is 0, the script will automatically detect the number of available threads at runtime.\033[0m\n
+	\033[38;2;141;218;255mconfigurations\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain build configuration for the project, such as one for arm64 and one for x86_64. \033[1mDocumentation for array entries:\033[0m\n
+		\033[38;2;141;218;255mconfigname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255mos\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's OS target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255march\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's processor architecture target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255mgcc\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the gcc binary\n
+		\033[38;2;141;218;255mgpp\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the g++ binary\n
+		\033[38;2;141;218;255mgccargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to GCC. Each argument goes in a new entry.\n
+		\033[38;2;141;218;255mgppargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to G++. Each argument goes in a new entry.\n
+		\033[38;2;141;218;255msourcefiles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote paths to individual source code files to be compiled, relative to the root directory of the project (where .np/ is considered a subdirectory). Each file goes in a new entry.\n
+		\033[38;2;141;218;255mcincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C compiler. Each directory goes in a new entry.\n
+		\033[38;2;141;218;255mcppincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C++ compiler. Each directory goes in a new entry.\n
+		\033[38;2;141;218;255mlibdirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of library files to be made available to the linker. Each directory goes in a new entry.\n
+		\033[38;2;141;218;255mldargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to the linker (ld). Each argument goes in a new entry.\n
+		\033[38;2;141;218;255mldlibs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote the library files that need to be linked to the executable in -l{name} form. Each file goes in a new entry.\n
+	\033[38;2;141;218;255mdependencies\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain library that needs to be built from source before the project itself can be built. This is a convenience mechanism and is completely optional to configure, but we recommend you make use of it to prevent \"library not found\"-type errors. \033[1mDocumentation for array entries:\033[0m\n
+		\033[38;2;141;218;255mlibname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly internal name for the library. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
+		\033[38;2;141;218;255mlibpath\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the library's source code root directory \033[3mif it is not in archive form\033[0m. Relative to the project's root directory. \033[1mUsed instead of the source archive, if both are present.\033[0m\n
+		\033[38;2;141;218;255mlibarchive\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the library's source code tarball (only tarballs are supported). It will be extracted into \033[38;2;141;218;255mlibdir\033[0m. If you specify a file that doesn't exist, the script will try to download (HTTP GET) the archive from each entry in \033[38;2;141;218;255mlibdownloads\033[0m, in top-to-bottom order.\n
+		\033[38;2;141;218;255mlibdir\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the directory where the source code archive will be extracted to.\n
+		\033[38;2;141;218;255mlibbuildcommands\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each denote individual commands run in \033[38;2;141;218;255mlibpath\033[0m or \033[38;2;141;218;255mlibdir\033[0m (whichever one applies) to build the external library. This can point to a full-fledged shell script.\n
+		\033[38;2;141;218;255mlibexistverification\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of paths that each point to individual library files that need to be present. If even one of them isn't there then the script will try to build the library again. If all are present then it will proceed to building the next library or building a configuration.\n
+		\033[38;2;141;218;255mlibdownloads\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that denote individual URLs that the script can try to download archives from to extract. \033[1mDocumentation for array entries:\033[0m\n
+			\033[38;2;141;218;255mlibdownloadurl\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the URL to download the archive from (can be any protocol that \033[38;2;128;255;57mwget\033[0m supports)\n
+			\033[38;2;141;218;255mlibarchivetype\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the type of archive that the downloaded file is. Can be one of the following: \033[38;2;225;225;225mtar,bzip2,gzip,zip,7z\033[0m. Make sure you have the proper decompressor installed!!\n
+	\033[38;2;141;218;255mvscodeintegration\033[0m [\033[38;2;255;141;142m\033[3mboolean\033[0m]: whether to activate integration with Visual Studio Code or not. If true, it will modify {projectrootdir}/.vscode/tasks.json and launch.json so the user can build the project with a click of a button in VSCode's Run & Debug UI.\n
+	\033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory\n
+
 In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. \033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.\n" | less
-  xit
+	xit
 fi
 
 # Embedded files (decoded from base64 just before writing to disk)
@@ -113,11 +123,11 @@ EOF
 )
 
 if [[ "$1" == "-m" || "$1" == "--make-defaults" || "$2" == "-m" || "$2" == "--make-defaults" || "$3" == "-m" || "$3" == "--make-defaults" || "$4" == "-m" || "$4" == "--make-defaults" || "$5" == "-m" || "$5" == "--make-defaults" ]]; then
-  mkd_path=$2
-  mkd_path=${mkd_path:=~/.config/np/defaults.json}
-  echo $defaults_json | base64 -d >> $mkd_path
-  nprint "Wrote new defaults file \033[38;2;241;255;71m$mkd_path\033[0m"
-  xit
+	mkd_path=$2
+	mkd_path=${mkd_path:=~/.config/np/defaults.json}
+	echo $defaults_json | base64 -d >> $mkd_path
+	nprint "Wrote new defaults file \033[38;2;241;255;71m$mkd_path\033[0m"
+	xit
 fi
 
 defaults_path=~/.config/np/defaults.json # Default defaults.json path
@@ -125,96 +135,113 @@ defaults_path=~/.config/np/defaults.json # Default defaults.json path
 
 
 if [ -f "$rootdir/.np/project.json" ]; then
-  nprint "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
-  # Everything in this code block past this point is temporary; for development purposes ONLY
-  rm -rfv .np src
-  nprint "\nI deleted the junk for you, run me again!\n"
-  xit
+	nprint "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
+	# Everything in this code block past this point is temporary; for development purposes ONLY
+	rm -rfv .np src
+	nprint "\nI deleted the junk for you, run me again!\n"
+	xit
 fi
 
 nprint "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
 read -n 1 -r
 if [[ $REPLY =~ ^[Nn]$ ]]; then
-  nprint "\nThen why did you launch this script???\n"
-  xit
+	nprint "\nThen why did you launch this script???\n"
+	xit
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  mkdir -p .np
-  echo $project_json | base64 -d >> .np/project.json # Extract project.json
-  nprint "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
-  mkdir -p src
-  echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
-  nprint "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-  [ -f $defaults_path ] && {
-    if [[ $dontusedefaults != 1 ]]; then
-      nprint "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
-      cd .np
+	mkdir -p .np
+	echo $project_json | base64 -d >> .np/project.json # Extract project.json
+	nprint "\n\n\033[38;2;57;255;60m.np/project.json\033[0m written successfully.\n"
+	mkdir -p src
+	echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
+	nprint "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
+	[ -f $defaults_path ] && {
+		if [[ $dontusedefaults != 1 ]]; then
+			nprint "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
+			cd .np
 
-      # Project name
-      d_projectname=$(jq -r '.d_projectname' $defaults_path)
-      if [[ $d_projectname != "null" ]]; then
-        jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mproject name\033[0m\n"
+			# Project name
+			d_projectname=$(jq -r '.d_projectname' $defaults_path)
+			if [[ $d_projectname != "null" ]]; then
+				jq --tab --arg d_projectname "$d_projectname" '.projectname = $d_projectname' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mproject name\033[0m\n"
 
-      # C standard version
-      d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
-      if [[ $d_cstdversion != "null" ]]; then
-        jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mC standard version\033[0m\n"
+			# C standard version
+			d_cstdversion=$(jq -r '.d_cstdversion' $defaults_path)
+			if [[ $d_cstdversion != "null" ]]; then
+				jq --tab --arg d_cstdversion "$d_cstdversion" '.cstdversion = $d_cstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mC standard version\033[0m\n"
 
-      # C++ standard version
-      d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
-      if [[ $d_cppstdversion != "null" ]]; then
-        jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mC++ standard version\033[0m\n"
+			# C++ standard version
+			d_cppstdversion=$(jq -r '.d_cppstdversion' $defaults_path)
+			if [[ $d_cppstdversion != "null" ]]; then
+				jq --tab --arg d_cppstdversion "$d_cppstdversion" '.cppstdversion = $d_cppstdversion' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mC++ standard version\033[0m\n"
 
-      # Number of compilation threads
-      d_threads=$(jq -r '.d_threads' $defaults_path)
-      if [[ $d_threads != "null" ]]; then
-        jq --tab --argjson d_threads "$d_threads" '.threads = $d_threads' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
+			# Number of compilation threads
+			d_threads=$(jq -r '.d_threads' $defaults_path)
+			if [[ $d_threads != "null" ]]; then
+				jq --tab --argjson d_threads "$d_threads" '.threads = $d_threads' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mNumber of compilation threads\033[0m\n"
 
-      # VSCode integration toggle
-      d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
-      if [[ $d_vscodeintegration == "true" ]]; then
-        jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      else
-        jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
+			# VSCode integration toggle
+			d_vscodeintegration=$(jq -r '.d_vscodeintegration' $defaults_path)
+			if [[ $d_vscodeintegration == "true" ]]; then
+				jq --tab '.vscodeintegration = true' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			else
+				jq --tab '.vscodeintegration = false' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mVSCode integration toggle\033[0m\n"
 
-      # VSCode projects folder
-      d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
-      if [[ $d_vscodefolder != "null" ]]; then
-        jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-      fi
-      nprint "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
+			# VSCode projects folder
+			d_vscodefolder=$(jq -r '.d_vscodefolder' $defaults_path)
+			if [[ $d_vscodefolder != "null" ]]; then
+				jq --tab --arg d_vscodefolder "$d_vscodefolder" '.vscodefolder = $d_vscodefolder' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+			fi
+			nprint "Finished configuring \033[1mVSCode project settings folder\033[0m\n"
 
-      # Build configurations (the hard part)
-      if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
-        jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
-      fi
-      n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
-      while true; do
-        n_iter=$((n_iter+1))
-        if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
-          nprint "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
-          ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
-          jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
-        else
-          echo "No build configurations left to copy."
-          break
-        fi
-      done
-      sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
-    fi
-  }
-  nprint "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
-  xit
+			# Build configurations (the hard part)
+			if [[ $(jq --tab '.d_configurations[0]' $defaults_path) != "null" ]]; then
+				jq '.configurations = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+			fi
+			n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
+			while true; do
+				n_iter=$((n_iter+1))
+				if [[ $(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
+					nprint "Copying \033[1mbuild configuration\033[0m #$n_iter...\n"
+					ext_config=$(jq --tab --arg n_iter $n_iter '.d_configurations[$n_iter|tonumber]' $defaults_path)
+					jq --tab --argjson ext_config "$ext_config" '.configurations += [$ext_config]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+				else
+					echo "No build configurations left to copy."
+					break
+				fi
+			done
+
+			# Libraries (also tough)
+			if [[ $(jq --tab '.d_dependencies[0]' $defaults_path) != "null" ]]; then
+				jq '.dependencies = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json # Remove the default template configuration if we have defaults.
+			fi
+			n_iter=-1 # jq array starts with 0, so initialize it wth -1 because it increments every time the loop is executed.
+			while true; do
+				n_iter=$((n_iter+1))
+				if [[ $(jq --tab --arg n_iter $n_iter '.d_dependencies[$n_iter|tonumber]' $defaults_path) != "null" ]]; then
+					nprint "Copying \033[1mdependency\033[0m #$n_iter...\n"
+					ext_dep=$(jq --tab --arg n_iter $n_iter '.d_dependencies[$n_iter|tonumber]' $defaults_path)
+					jq --tab --argjson ext_dep "$ext_dep" '.dependencies += [$ext_dep]' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
+				else
+					echo "No dependencies left to copy."
+					break
+				fi
+			done
+			sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
+		fi
+	}
+	nprint "\n\033[38;2;12;255;34mYour project has been created!\033[0m Use \033[38;2;247;255;30m.np/project.json\033[0m to configure your project. Use \033[38;2;128;255;57mnp -d\033[0m to get documentation about the project configuration file.\nRun \033[38;2;128;255;57mnp -r\033[0m to generate a build script. To build your project, just run the script.\nRemember, you have to regenerate the build script every time you edit \033[38;2;247;255;30m.np/project.json\033[0m!\n"
+	xit
 fi
 
 nprint "\033[0m"

@@ -41,16 +41,20 @@
   "dependencies": [
     {
       "libname": "np_libname",
-      "libdetails": {
-        "libpath": "np_libpath",
-        "libtarball": "np_libtarball",
-        "libdir": "np_libfolder",
-        "libdownloads": [
-          "np_libdownloads"
-        ]
-      },
+      "libpath": "np_libpath",
+      "libarchive": "np_libarchive",
+      "libdir": "np_libfolder",
       "libbuildcommands": [
         "np_libbuildcommands"
+      ],
+      "libexistverification": [
+        "np_libexistverification"
+      ],
+      "libdownloads": [
+        {
+          "libdownloadurl": "np_libdownloadurl",
+          "libarchivetype": "np_libarchivetype"
+        }
       ]
     }
   ],
