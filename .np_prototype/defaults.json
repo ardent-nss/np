@@ -2,7 +2,7 @@
   "d_projectname": "np_name",
   "d_cstdversion": "np_cstdver",
   "d_cppstdversion": "np_cppstdver",
-  "d_threads": 1,
+  "d_threads": 0,
   "d_configurations": [
     {
       "d_configname": "np_confname",
@@ -35,6 +35,22 @@
       ],
       "d_ldlibs": [
         "np_ldlibs"
+      ]
+    }
+  ],
+  "d_dependencies": [
+    {
+      "d_libname": "np_libname",
+      "d_libdetails": {
+        "d_libpath": "np_libpath",
+        "d_libtarball": "np_libtarball",
+        "d_libdir": "np_libfolder",
+        "d_libdownloads": [
+          "np_libdownloads"
+        ]
+      },
+      "d_libbuildcommands": [
+        "np_libbuildcommands"
       ]
     }
   ],

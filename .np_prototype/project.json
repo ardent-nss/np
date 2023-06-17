@@ -2,7 +2,7 @@
   "projectname": "np_name",
   "cstdversion": "np_cstdver",
   "cppstdversion": "np_cppstdver",
-  "threads": 1,
+  "threads": 0,
   "configurations": [
     {
       "configname": "np_confname",
@@ -35,6 +35,22 @@
       ],
       "ldlibs": [
         "np_ldlibs"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "libname": "np_libname",
+      "libdetails": {
+        "libpath": "np_libpath",
+        "libtarball": "np_libtarball",
+        "libdir": "np_libfolder",
+        "libdownloads": [
+          "np_libdownloads"
+        ]
+      },
+      "libbuildcommands": [
+        "np_libbuildcommands"
       ]
     }
   ],
