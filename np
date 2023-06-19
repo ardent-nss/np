@@ -93,40 +93,7 @@ In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix 
 	xit
 }
 
-while test $# -gt 0; do # Argument parsing
-	case "$1" in
-		-h) helpmenu
-			;;
-		--help) helpmenu
-			;;
-		-v) nprint "$scriptversion\n"
-				xit
-			;;
-		--version) nprint "$scriptversion\n"
-				xit
-			;;
-		-f) noformat=1
-			;;
-		--no-formatting) noformat=1
-			;;
-		-d) display_documentation
-			;;
-		--documentation) display_documentation
-			;;
-		--*) echo "Unrecognized option $1. Exiting."
-				 xit
-			;;
-		*) echo "argument $1"
-			;;
-	esac
-	shift
-done
-
-if [[ "$1" == "-n" || "$1" == "--no-defaults" || "$2" == "-n" || "$2" == "--no-defaults" || "$3" == "-n" || "$3" == "--no-defaults" || "$4" == "-n" || "$4" == "--no-defaults" || "$5" == "-n" || "$5" == "--no-defaults" ]]; then
-	dontusedefaults=1
-fi
-
-if [[ "$1" == "-o" || "$1" == "--other-defaults" || "$2" == "-o" || "$2" == "--other-defaults" || "$3" == "-o" || "$3" == "--other-defaults" || "$4" == "-o" || "$4" == "--other-defaults" || "$5" == "-o" || "$5" == "--other-defaults" ]]; then
+use_other_defaults() {
 	defaults_path=$2
 	defaults_path=${defaults_path:="~/.config/np/defaults.json"}
 	if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
@@ -134,7 +101,33 @@ if [[ "$1" == "-o" || "$1" == "--other-defaults" || "$2" == "-o" || "$2" == "--o
 	else
 		nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
 	fi
-fi
+	xit # Remove when done testing!!
+}
+
+while test $# -gt 0; do # Argument parsing
+	case "$1" in
+		-h|--help) helpmenu
+			;;
+		-v|--version) nprint "$scriptversion\n"
+				xit
+			;;
+		-f|--no-formatting) noformat=1
+			;;
+		-d|--documentation) display_documentation
+			;;
+		-n|--no-defaults) dontusedefaults=1
+			;;
+		-o|--other-defaults) use_other_defaults
+				passed_arg=$2
+			;;
+		*) echo "argument $1"
+			;;
+		--*) echo "Unrecognized option $1. Exiting."
+				 xit
+			;;
+	esac
+	shift
+done
 
 if [[ "$1" == "-d" || "$1" == "--documentation" || "$2" == "-d" || "$2" == "--documentation" || "$3" == "-d" || "$3" == "--documentation" || "$4" == "-d" || "$4" == "--documentation" || "$5" == "-d" || "$5" == "--documentation" ]]; then
 	nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:\n
