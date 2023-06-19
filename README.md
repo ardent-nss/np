@@ -4,6 +4,6 @@ np is a build system for C/C++, made from scratch in Bash. Under early developme
 
 ## Help!! My terminal can't handle all the fancy formatting escape sequences in your script.
 
-Run the script with the `-f` option.
+Run the script with the `-f` option. Make sure it's the *first* argument, or it might not work. Also, I would seriously consider upgrading/changing my terminal if I were you in this situation.
 
 ###### Everything in this repository is public domain, but I'd appreciate it if you gave credit to me for my work :)

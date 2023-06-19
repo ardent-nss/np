@@ -5,13 +5,19 @@ rootdir=$(pwd) # Current directory, for reference (this will serve as our "home"
 projectname=cpp_playground
 
 xit() {
-  printf "\033[0m" # Reset terminal colors for dumb shells
-  exit 0
+	if [ $noformat == 0 ]; then
+		printf "\033[0m" # Reset terminal colors for dumb shells
+	fi
+	exit 0
 }
 
-nprint() {
-  txt=$1
-  printf "$txt" | fmt -s -w $(tput cols) # -g $(tput cols)
+nprint() { # printf with rudimentary line wrapping
+	txt=$1
+	if [ $noformat == 0 ]; then
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols)
+	else
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
+	fi
 }
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then
