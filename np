@@ -170,51 +170,6 @@ while test $# -gt 0; do # Argument parsing
 	shift
 done
 
-if [[ "$1" == "-d" || "$1" == "--documentation" || "$2" == "-d" || "$2" == "--documentation" || "$3" == "-d" || "$3" == "--documentation" || "$4" == "-d" || "$4" == "--documentation" || "$5" == "-d" || "$5" == "--documentation" ]]; then
-	nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:\n
-	\033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-	\033[38;2;141;218;255mcstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C standard version used in the project. Valid versions: \033[38;2;225;225;225mc89,c99,c11,c17,c23,gnu89,gnu99,gnu11,gnu17,gnu23\033[0m.\n
-	\033[38;2;141;218;255mcppstdversion\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the C++ standard version used in the project. Valid versions: \033[38;2;225;225;225mc++98,c++03,c++11,c++14,c++17,c++20,c++23,gnu++98,gnu++03,gnu++11,gnu++14,gnu++17,gnu++20,gnu++23.\033[0m\n
-	\033[38;2;141;218;255mthreads\033[0m [\033[38;2;215;50;205m\033[3minteger\033[0m]: the number of threads that will be used to compile the project. \033[3mIf it is 0, the script will automatically detect the number of available threads at runtime.\033[0m\n
-	\033[38;2;141;218;255mconfigurations\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain build configuration for the project, such as one for arm64 and one for x86_64. \033[1mDocumentation for array entries:\033[0m\n
-		\033[38;2;141;218;255mconfigname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255mtype\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the type of binary being built. Can either be \033[38;2;225;225;225mexe\033[0m or \033[38;2;225;225;225mlib\033[0m; use \033[38;2;225;225;225mexe\033[0m for normal executables, use \033[38;2;225;225;225mlib\033[0m if you're building a library.\n
-		\033[38;2;141;218;255mos\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's OS target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255march\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the configuration's processor architecture target. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255mgcc\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the gcc binary\n
-		\033[38;2;141;218;255mgpp\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the name of the g++ binary\n
-		\033[38;2;141;218;255mgccargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to GCC. Each argument goes in a new entry.\n
-		\033[38;2;141;218;255mgppargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to G++. Each argument goes in a new entry.\n
-		\033[38;2;141;218;255msourcefiles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote paths to individual source code files to be compiled, relative to the root directory of the project (where .np/ is considered a subdirectory). Each file goes in a new entry.\n
-		\033[38;2;141;218;255mcincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C compiler. Each directory goes in a new entry.\n
-		\033[38;2;141;218;255mcppincludedirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of headers to be made available to the C++ compiler. Each directory goes in a new entry.\n
-		\033[38;2;141;218;255mlibdirs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote directories of library files to be made available to the linker. Each directory goes in a new entry.\n
-		\033[38;2;141;218;255mldargs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual arguments passed to the linker (ld). Each argument goes in a new entry.\n
-		\033[38;2;141;218;255mldlibs\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote the library files that need to be linked to the executable in -l{name} form. Each file goes in a new entry.\n
-		\033[38;2;141;218;255maftercompilationoverride\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that denote individual commands being run after compilation. If this array is not empty then the script does not attempt to link the binary manually, and gives you full control of what happens after compilation. Useful for building libraries. After commands in this array are executed, essentially nothing else is left to happen. Can point to a full-fledged script.\n
-	\033[38;2;141;218;255mdependencies\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a certain library that needs to be built from source before the project itself can be built. This is a convenience mechanism and is completely optional to configure, but we recommend you make use of it to prevent \"library not found\"-type errors. \033[1mDocumentation for array entries:\033[0m\n
-		\033[38;2;141;218;255mlibname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly internal name for the library. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255mlibpath\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the library's source code root directory \033[3mif it is not in archive form\033[0m. Relative to the project's root directory. \033[1mUsed instead of the source archive, if both are present.\033[0m\n
-		\033[38;2;141;218;255mlibarchive\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the library's source code tarball (only tarballs are supported). It will be extracted into \033[38;2;141;218;255mlibdir\033[0m. If you specify a file that doesn't exist, the script will try to download (HTTP GET) the archive from each entry in \033[38;2;141;218;255mlibdownloads\033[0m, in top-to-bottom order.\n
-		\033[38;2;141;218;255mlibdir\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the directory where the source code archive will be extracted to.\n
-		\033[38;2;141;218;255mlibbuildcommands\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each denote individual commands run in \033[38;2;141;218;255mlibpath\033[0m or \033[38;2;141;218;255mlibdir\033[0m (whichever one applies) to build the external library. This can point to a full-fledged shell script.\n
-		\033[38;2;141;218;255mlibexistverification\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of paths that each point to individual library files that need to be present. If all of them aren't there then the script will try to build the library again. If all are present then it will proceed to building the next library or building a configuration. You can use \033[38;2;141;218;255mlibpath\033[0m and \033[38;2;141;218;255mlibdir\033[0m as variables by typing them literally inside the paths: \033[38;2;128;255;57m{libpath}\033[0m,\033[38;2;128;255;57m{libdir}\033[0m.\n
-		\033[38;2;141;218;255mlibdownloads\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that denote individual URLs that the script can try to download archives from to extract. \033[1mDocumentation for array entries:\033[0m\n
-			\033[38;2;141;218;255mlibdownloadurl\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the URL to download the archive from (can be any protocol that \033[38;2;128;255;57mwget\033[0m supports)\n
-			\033[38;2;141;218;255mlibarchivetype\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the type of archive that the downloaded file is. Can be one of the following: \033[38;2;225;225;225mtar,bzip2,gzip,zip,7z\033[0m. Make sure you have the proper decompressor installed!!\n
-	\033[38;2;141;218;255mbundles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a bundle. A bundle is a group of configurations that are built all at once. \033[1mDocumentation for array entries:\033[0m\n
-		\033[38;2;141;218;255mbundlename\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the bundle. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255mconfigurationstobuild\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each contain names of individual configurations to be built in this bundle.\n
-	\033[38;2;141;218;255mmegabundles\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of JSON objects that each denote a megabundle. A megabundle is a group of \033[3mbundles\033[0m that are built all at once. \033[1mDocumentation for array entries:\033[0m\n
-		\033[38;2;141;218;255mmegabundlename\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the megabundle. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n
-		\033[38;2;141;218;255mconfigurationstobuild\033[0m [\033[38;2;30;226;141m\033[3marray\033[0m]: an array of strings that each contain names of individual bundles to be built in this megabundle.\n
-	\033[38;2;141;218;255mvscodeintegration\033[0m [\033[38;2;255;141;142m\033[3mboolean\033[0m]: whether to activate integration with Visual Studio Code or not. If true, it will modify \033[38;2;128;255;255m{projectrootdir}/.vscode/tasks.json\033[0m and \033[38;2;128;255;255mlaunch.json\033[0m so the user can build the project with a click of a button in VSCode's Run & Debug UI.\n
-	\033[38;2;141;218;255mvscodefolder\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: the path to the .vscode folder, which the user can freely modify if it is not located in the root directory\n
-
-In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix behind every JSON tag name, but otherwise, just go about business as usual. (\033[38;2;57;255;60mproject.json\033[0m and \033[38;2;241;255;71mdefaults.json\033[0m syntax is completely the same except for the JSON tag prefixes.)\n" | less
-	xit
-fi
-
 if [ -f "$rootdir/.np/project.json" ]; then
 	regenerate_buildscript
 fi
@@ -222,7 +177,7 @@ fi
 nprint "No project exists in your current working directory. Would you like to create a new one? \033[1m[Y/n]\033[0m "
 read -n 1 -r
 if [[ $REPLY =~ ^[Nn]$ ]]; then
-	nprint "\nThen why did you launch this script???\n"
+	nprint "\nGood day, then.\n"
 	xit
 fi
 if [[ $REPLY =~ ^[Yy]$ ]]; then
