@@ -1,10 +1,13 @@
 #!/bin/bash
-#  np: New Project C/C++ build system
+# np: New Project C/C++ build system
+# Run with --help.
+
+#noformat=1 # Uncomment this to disable all formatting even if writing to tty.
 
 scriptversion=v0.0.1.0
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
-if [ -t 1 ]; then
+if [ -t 1 ]; then # If writing output to anywhere that isn't a tty, don't use formatting
 	noformat=0
 else
 	noformat=1
@@ -13,13 +16,13 @@ fi
 nprint() { # printf with rudimentary line wrapping
 	txt=$1
 	if [ $noformat == 0 ]; then
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols)
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
 	else
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
 	fi
 }
 
-xit() {
+xit() { # exit but with a bit of additional clean-up
 	if [ $noformat == 0 ]; then
 		printf "\033[0m" # Reset terminal colors for dumb shells
 	fi
@@ -109,30 +112,30 @@ In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix 
 	xit
 }
 
-make_defaults() {
-	mkd_path=${mkd_path:=~/.config/np/defaults.json}
-	if [[ $mkd_path == *"/"* || $mkd_path == *"\\"* ]]; then
+make_defaults() { # Create a new defaults file
+	mkd_path=${mkd_path:=~/.config/np/defaults.json} # If no path specified, assume default path
+	if [[ $mkd_path == *"/"* || $mkd_path == *"\\"* ]]; then # This is a feature that makes selecting defaults files easier. If you enter a full path then it will use that path, but if you just enter a string like 'foo' then the script will assume you mean ~/.config/np/foo.json. Very convenient.
 		echo $defaults_json | base64 -d >> $mkd_path
-		nprint "Wrote new defaults file to \033[38;2;241;255;71m$mkd_path\033[0m"
+		nprint "Wrote new defaults file to \033[38;2;241;255;71m$mkd_path\033[0m" # Fixed path
 	else
 		echo $defaults_json | base64 -d >> ~/.config/np/$mkd_path.json
-		nprint "Wrote new defaults file to \033[38;2;241;255;71m~/.config/np/$mkd_path.json\033[0m"
+		nprint "Wrote new defaults file to \033[38;2;241;255;71m~/.config/np/$mkd_path.json\033[0m" # Convenience feature
 	fi
-	xit
+	xit # That's all we needed to do.
 }
 
-use_other_defaults() {
-	defaults_path=$passed_arg
-	defaults_path=${defaults_path:="~/.config/np/defaults.json"}
-	if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
+use_other_defaults() { # Use a defaults file other than ~/.config/np/defaults.json
+	defaults_path=$other_defaults # If the user passed an argument then this will not be null
+	defaults_path=${defaults_path:="~/.config/np/defaults.json"} # If null, use default path
+	if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then # Same convenience feature from make_defaults()
 		nprint "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
 	else
 		nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
-		defaults_path=~/.config/np/$passed_arg.json
+		defaults_path=~/.config/np/$other_defaults.json
 	fi
 }
 
-regenerate_buildscript() {
+regenerate_buildscript() { # Regenerate the build script for the active project based on data in .np/project.json
 	nprint "\033[38;2;255;141;250mRegenerating build script...\033[0m\n"
 	# Everything in this code block past this point is temporary; for development purposes ONLY
 	rm -rfv .np src
@@ -141,36 +144,34 @@ regenerate_buildscript() {
 }
 
 while test $# -gt 0; do # Argument parsing
-	case "$1" in
-		-h|--help) helpmenu
+	case "$1" in # I have no idea what this does but it works. Don't ask questions
+		-h|--help) helpmenu # Display the help menu
 			;;
-		-v|--version) nprint "$scriptversion\n"
+		-v|--version) nprint "$scriptversion\n" # Display the script version
 				xit
 			;;
-		-f|--no-formatting) noformat=1
+		-f|--no-formatting) noformat=1 # Disable formatting
 			;;
-		-d|--documentation) display_documentation
+		-d|--documentation) display_documentation # Display documentation for .np/project.json
 			;;
-		-m|--make-defaults) mkd_path=$2
+		-m|--make-defaults) mkd_path=$2 # Create new defaults file, optionally at a specific path
 				make_defaults
 			;;
-		-n|--no-defaults) dontusedefaults=1
+		-n|--no-defaults) dontusedefaults=1 # Don't use a defaults file at all; start project from scratch
 			;;
-		-o|--other-defaults) passed_arg=$2
+		-o|--other-defaults) other_defaults=$2 # Use a defaults file other than ~/.config/np/defaults.json
 				use_other_defaults
 			;;
-		-r|--regenerate) regenerate_buildscript
+		-r|--regenerate) regenerate_buildscript # Regenerate the project's build script based on data in .np/project.json
 			;;
-		*) echo "Unneeded argument $1, discarding."
-			;;
-		--*) echo "Unrecognized option $1. Exiting."
+		--*) echo "Unrecognized option $1. Exiting." # Exit if there's an unrecognized or typo'd option
 				 xit
 			;;
 	esac
 	shift
 done
 
-if [ -f "$rootdir/.np/project.json" ]; then
+if [ -f "$rootdir/.np/project.json" ]; then # If the project already exists and no arguments were passed, just regenerate the build script.
 	regenerate_buildscript
 fi
 
@@ -187,7 +188,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	mkdir -p src
 	echo $template_cpp | base64 -d >> src/main.cpp # Extract main.cpp
 	nprint "\033[38;2;57;237;255msrc/main.cpp\033[0m written successfully.\n"
-	[ -f $defaults_path ] && {
+	[ -f $defaults_path ] && { # If the defaults file exists, attempt to F&R values in .np/project.json with the ones in defaults.
 		if [[ $dontusedefaults != 1 ]]; then
 			nprint "Attempting to F&R with default values from \033[38;2;241;255;71m$defaults_path\033[0m...\n\n"
 			cd .np
@@ -305,13 +306,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 			done
 
 			sed -i "s/\"d_/\"/g" project.json # Remove the d_ prefix from all values
-			if [[ $(jq --tab '.d_dependencies | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template library entry because it's not mandatory
+			if [[ $(jq --tab '.d_dependencies | length' $defaults_path) == 0 ]]; then # Remove the template library entry because it's not mandatory
 				jq --tab '.dependencies = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
 			fi
-			if [[ $(jq --tab '.d_bundles | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template bundle entry because it's not mandatory
+			if [[ $(jq --tab '.d_bundles | length' $defaults_path) == 0 ]]; then # Remove the template bundle entry because it's not mandatory
 				jq --tab '.bundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
 			fi
-			if [[ $(jq --tab '.d_megabundles | length' $defaults_path) == 0 || $dontusedefaults == 1 ]]; then # Remove the template megabundle entry because it's not mandatory
+			if [[ $(jq --tab '.d_megabundles | length' $defaults_path) == 0 ]]; then # Remove the template megabundle entry because it's not mandatory
 				jq --tab '.megabundles = []' project.json >> project_tmp.json && rm project.json && mv project_tmp.json project.json
 			fi
 		fi
@@ -320,5 +321,4 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	xit
 fi
 
-nprint "\033[0m"
-exit 0
+xit

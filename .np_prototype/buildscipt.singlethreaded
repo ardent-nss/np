@@ -4,6 +4,12 @@
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 projectname=cpp_playground
 
+if [ -t 1 ]; then
+	noformat=0
+else
+	noformat=1
+fi
+
 xit() {
 	if [ $noformat == 0 ]; then
 		printf "\033[0m" # Reset terminal colors for dumb shells

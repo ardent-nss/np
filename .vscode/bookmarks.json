@@ -1,0 +1,64 @@
+{
+	"files": [
+		{
+			"path": "np",
+			"bookmarks": [
+				{
+					"line": 9,
+					"column": 0,
+					"label": "tty checker"
+				},
+				{
+					"line": 15,
+					"column": 0,
+					"label": "nprint()"
+				},
+				{
+					"line": 24,
+					"column": 0,
+					"label": "xit()"
+				},
+				{
+					"line": 31,
+					"column": 0,
+					"label": "Embedded files"
+				},
+				{
+					"line": 47,
+					"column": 0,
+					"label": "helpmenu()"
+				},
+				{
+					"line": 69,
+					"column": 0,
+					"label": "display_documentation()"
+				},
+				{
+					"line": 114,
+					"column": 0,
+					"label": "make_defaults()"
+				},
+				{
+					"line": 126,
+					"column": 0,
+					"label": "use_other_defaults()"
+				},
+				{
+					"line": 137,
+					"column": 0,
+					"label": "regenerate_buildscript()"
+				},
+				{
+					"line": 145,
+					"column": 0,
+					"label": "Argument parsing"
+				},
+				{
+					"line": 177,
+					"column": 0,
+					"label": "Project creation"
+				}
+			]
+		}
+	]
+}
