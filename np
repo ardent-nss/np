@@ -7,10 +7,12 @@
 scriptversion=v0.0.1.0
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 
-if [ -t 1 ]; then # If writing output to anywhere that isn't a tty, don't use formatting
-	noformat=0
-else
-	noformat=1
+if [[ $noformat != 1 ]]; then
+	if [ -t 1 ]; then # If writing output to anywhere that isn't a tty, don't use formatting
+		noformat=0
+	else
+		noformat=1
+	fi
 fi
 
 nprint() { # printf with rudimentary line wrapping
