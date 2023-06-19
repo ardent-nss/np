@@ -94,14 +94,13 @@ In a defaults file, you have to insert a \033[38;2;156;250;255md_\033[0m prefix 
 }
 
 use_other_defaults() {
-	defaults_path=$2
+	defaults_path=$passed_arg
 	defaults_path=${defaults_path:="~/.config/np/defaults.json"}
 	if [[ $defaults_path == *"/"* || $defaults_path == *"\\"* ]]; then
 		nprint "Using \033[38;2;241;255;71m$defaults_path\033[0m as defaults file"
 	else
 		nprint "Using \033[38;2;241;255;71m~/.config/np/$defaults_path.json\033[0m as defaults file"
 	fi
-	xit # Remove when done testing!!
 }
 
 while test $# -gt 0; do # Argument parsing
@@ -117,10 +116,10 @@ while test $# -gt 0; do # Argument parsing
 			;;
 		-n|--no-defaults) dontusedefaults=1
 			;;
-		-o|--other-defaults) use_other_defaults
-				passed_arg=$2
+		-o|--other-defaults) passed_arg=$2
+				use_other_defaults
 			;;
-		*) echo "argument $1"
+		*) echo "Unneeded argument $1, discarding."
 			;;
 		--*) echo "Unrecognized option $1. Exiting."
 				 xit
