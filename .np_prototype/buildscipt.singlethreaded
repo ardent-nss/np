@@ -18,14 +18,14 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   nprint "This is the build script for \033[1m${projectname}\033[0m.
 Make sure to regenerate this script every time \033[38;2;57;255;60m.np/project.json\033[0m is modified.\n
 \033[4mGeneral options:\033[0m
-  -h | --help\t\tdisplay this help page
+  -h | --\033[4mh\033[0melp\t\tdisplay this help page
 
 \033[4mBuild options:\033[0m
-  \033[1m-b\033[0m | \033[1m--build\t\tbuild the project (this executes even if no arguments are passed)\033[0m
-  -v | --verify\t\tensure that current hashes of all source files match hashes saved during last build
-  -f | --force-rebuild\tforce rebuild all source files even if they haven't changed from the last build
-  -l | --library-build\tbuild libraries from scratch. All rebuilt if argument is not present.
-                [LIBS]\tspecify libraries to (re)build in [LIBS]
-"
+  \033[1m-b | --\033[4mb\033[0m\033[1muild\t\tbuild the project, recompiling only changed source files (this executes even if no arguments are passed)\033[0m
+  -v | --\033[4mv\033[0merify\t\tensure that current hashes of all source files match hashes saved during last build
+  -f | --\033[4mf\033[0morce-rebuild\tforce rebuild something even if the source code hasn't changed from the last build. If \033[38;2;225;225;225m[OBJECT]\033[0m is empty it rebuilds everything: all configurations, bundles, megabundles, and libraries.
+              \033[38;2;225;225;225m[OBJECT]\033[0m\tspecify specific thing(s) to rebuild in \033[38;2;225;225;225m[OBJECT]\033[0m. This could be a configuration, bundle, megabundle, or a library. Separate multiple objects with a comma.
+              \t\tyou can also pass \033[38;2;141;218;255m{objecttype}\033[0m to \033[38;2;225;225;225m[OBJECT]\033[0m rebuild all objects of a specific type; so \033[38;2;128;255;57m./buildscript -f {configurations}\033[0m would rebuild all configurations, and nothing else. Separate multiple object types with a comma.
+" | less
   xit
 fi
