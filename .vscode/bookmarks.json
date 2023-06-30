@@ -59,6 +59,46 @@
 					"label": "Project creation"
 				}
 			]
+		},
+		{
+			"path": ".np_prototype/buildscipt.singlethreaded",
+			"bookmarks": [
+				{
+					"line": 9,
+					"column": 0,
+					"label": "tty checker"
+				},
+				{
+					"line": 17,
+					"column": 0,
+					"label": "nprint()"
+				},
+				{
+					"line": 26,
+					"column": 0,
+					"label": "xit()"
+				},
+				{
+					"line": 33,
+					"column": 0,
+					"label": "helpmenu()"
+				},
+				{
+					"line": 49,
+					"column": 0,
+					"label": "verify_source_files()"
+				},
+				{
+					"line": 54,
+					"column": 0,
+					"label": "rebuild_project()"
+				},
+				{
+					"line": 61,
+					"column": 0,
+					"label": "Argument parsing"
+				}
+			]
 		}
 	]
 }

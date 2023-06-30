@@ -1,32 +1,37 @@
 #!/bin/bash
-# Build script for cpp_playground
+# buildscript.singlethreaded: prototype single-threaded build script for projects generated with np
+# Run with --help for help!
+
+#noformat=1 # Uncomment this to disable all formatting even if writing to tty.
 
 rootdir=$(pwd) # Current directory, for reference (this will serve as our "home")
 projectname=cpp_playground
 
-if [ -t 1 ]; then
-	noformat=0
-else
-	noformat=1
+if [[ $noformat != 1 ]]; then # If the user uncommented line 5 then there's no need for this check.
+	if [ -t 1 ]; then # If writing output to anywhere that isn't a tty, don't use formatting
+		noformat=0
+	else
+		noformat=1
+	fi
 fi
 
-xit() {
+nprint() { # printf with rudimentary line wrapping
+	txt=$1
+	if [ $noformat == 0 ]; then
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
+	else
+		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
+	fi
+}
+
+xit() { # exit but with a bit of additional clean-up
 	if [ $noformat == 0 ]; then
 		printf "\033[0m" # Reset terminal colors for dumb shells
 	fi
 	exit 0
 }
 
-nprint() { # printf with rudimentary line wrapping
-	txt=$1
-	if [ $noformat == 0 ]; then
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols)
-	else
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
-	fi
-}
-
-if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+helpmenu() {
   nprint "This is the build script for \033[1m${projectname}\033[0m.
 Make sure to regenerate this script every time \033[38;2;57;255;60m.np/project.json\033[0m is modified.\n
 \033[4mGeneral options:\033[0m
@@ -36,8 +41,40 @@ Make sure to regenerate this script every time \033[38;2;57;255;60m.np/project.j
   \033[1m-b | --\033[4mb\033[0m\033[1muild\t\tbuild the project, recompiling only changed source files (this executes even if no arguments are passed)\033[0m
   -v | --\033[4mv\033[0merify\t\tensure that current hashes of all source files match hashes saved during last build
   -f | --\033[4mf\033[0morce-rebuild\tforce rebuild something even if the source code hasn't changed from the last build. If \033[38;2;225;225;225m[OBJECT]\033[0m is empty it rebuilds everything: all configurations, bundles, megabundles, and libraries.
-              \033[38;2;225;225;225m[OBJECT]\033[0m\tspecify specific thing(s) to rebuild in \033[38;2;225;225;225m[OBJECT]\033[0m. This could be a configuration, bundle, megabundle, or a library. Separate multiple objects with a comma.
-              \t\tyou can also pass \033[38;2;141;218;255m{objecttype}\033[0m to \033[38;2;225;225;225m[OBJECT]\033[0m rebuild all objects of a specific type; so \033[38;2;128;255;57m./buildscript -f {configurations}\033[0m would rebuild all configurations, and nothing else. Separate multiple object types with a comma.
+              \033[38;2;225;225;225m[OBJECT]\033[0m\tspecify specific thing(s) to rebuild in \033[38;2;225;225;225m[OBJECT]\033[0m. This could be a configuration (prepend c. to the object name), bundle (prepend b. to the object name), megabundle (prepend m. to the object name), or a library (prepend l. to the object name). Separate multiple objects with a colon.
+              \t\tyou can also pass \033[38;2;141;218;255m{objecttype}\033[0m to \033[38;2;225;225;225m[OBJECT]\033[0m rebuild all objects of a specific type; so \033[38;2;128;255;57m./buildscript -f {configurations}\033[0m would rebuild all configurations, and nothing else. Separate multiple object types with a colon.
 " | less
   xit
-fi
+}
+
+verify_source_files() {
+	echo "Will be in development soon!"
+	xit
+}
+
+rebuild_project() {
+	# 1. Check the hashdb to see which files need to be recompiled. Put them in a colon-separated list.
+	# 2. Get the number of source files that need to be recompiled. This will be useful when executing a loop later on.
+	# 3.
+
+	xit
+}
+
+while test $# -gt 0; do # Argument parsing
+	case "$1" in # I have no idea what this does but it works. Don't ask questions
+		-h|--help) helpmenu # Display the help menu
+			;;
+		-v|--verify) verify_source_files
+			;;
+		-f|--force-rebuild) rebuild_details=$2
+				echo $rebuild_details
+				rebuild_project
+			;;
+		--*) echo "Unrecognized option $1. Exiting." # Exit if there's an unrecognized or typo'd option
+				 xit
+			;;
+	esac
+	shift
+done
+
+xit
