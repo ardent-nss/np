@@ -17,18 +17,21 @@ fi
 
 nprint() { # printf with rudimentary line wrapping
   if [ $noformat == 0 ]; then # Remove all formatting escape sequences if noformat=1
-    if [ -n "${3}" ]; then
-      printf "$1" "${2}" "${3}" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
+    if [ -n "${20}" ]; then  # fmt wraps lines neatly if terminal width is less than optimal
+      printf "$1" "${2}" "${3}" "${4}" "${5}" | fmt -s -w $(tput cols) -g $(tput cols)
+      return    
+    elif [ -n "${4}" ]; then
+      printf "$1" "${2}" "${3}" "${4}" | fmt -s -w $(tput cols) -g $(tput cols)
       return
-      echo "still here!"
+    elif [ -n "${3}" ]; then
+      printf "$1" "${2}" "${3}" | fmt -s -w $(tput cols) -g $(tput cols)
+      return
     elif [ -n "${2}" ]; then
       printf "$1" "${2}" | fmt -s -w $(tput cols) -g $(tput cols)
       return
-      echo "yeeet"
     elif [ -n "${1}" ]; then
       printf "$1" | fmt -s -w $(tput cols) -g $(tput cols)
       return
-      echo "yeah"
     fi
   else
     printf "$1" "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}" "${10}" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g'
@@ -62,8 +65,8 @@ helpmenu() {
   nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
-  %-22sdisplay this help page
-  %-22sdisplay the version number of the script (${scriptversion})
+  %-30bdisplay this help page
+  %-30bdisplay the version number of the script (${scriptversion})
   -n | --no-\033[4mf\033[0mormatting\tdo not use ANSI formatting in standard output (automatically disabled if not writing to tty)
   -d | --\033[4md\033[0mocumentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
   -m | --\033[4mm\033[0make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
