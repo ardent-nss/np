@@ -2,7 +2,7 @@
   "projectname": "np_name",
   "cstdversion": "np_cstdver",
   "cppstdversion": "np_cppstdver",
-  "threads": 0,
+  "defaultcompilationthreads": 0,
   "compilers": [
     {
       "compilername": "np_compilername",
@@ -29,6 +29,7 @@
 			"type": "np_type",
       "os": "np_os",
       "arch": "np_arch",
+      "compilationthreads": 0,
       "compiler": "np_compiler",
       "bindir": "np_bindir",
       "objdir": "np_objdir",
@@ -99,6 +100,8 @@
       "libpath": "np_libpath",
       "libarchive": "np_libarchive",
       "libdir": "np_libfolder",
+      "libcompilationthreads": 0,
+      "libbuildpwd": "np_libbuildpwd",
       "libbuildcommands": [
         "np_libbuildcommands"
       ],
@@ -108,8 +111,14 @@
       "libdownloads": [
         {
           "libdownloadurl": "np_libdownloadurl",
-          "libarchivetype": "np_libarchivetype"
+          "libarchivetype": "np_libarchivetype",
+          "libextractioncommands": [
+            "np_libextractioncommands"
+          ]
         }
+      ],
+      "fulldependencyhandlingoverride": [
+        "np_fulldependencyhandlingoverride"
       ]
     }
   ],
@@ -121,6 +130,9 @@
 			],
       "blibrariestobuild": [
         "np_blibrariestobuild"
+      ],
+      "fullbundleoverride": [
+        "np_fullbundleoverride"
       ]
 		}
 	],
@@ -132,6 +144,9 @@
 			],
       "mblibrariestobuild": [
         "np_mblibrariestobuild"
+      ],
+      "fullmegabundleoverride": [
+        "np_fullmegabundleoverride"
       ]
 		}
 	],
@@ -143,6 +158,9 @@
 			],
       "bblibrariestobuild": [
         "np_bblibrariestobuild"
+      ],
+      "fullbigbangoverride": [
+        "np_fullbigbangoverride"
       ]
 		}
   ],
