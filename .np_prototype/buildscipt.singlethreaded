@@ -16,12 +16,11 @@ if [[ $noformat != 1 ]]; then # If the user uncommented line 5 then there's no n
 fi
 
 nprint() { # printf with rudimentary line wrapping
-	txt=$1
-	if [ $noformat == 0 ]; then
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
-	else
-		printf "$txt" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
-	fi
+  if [ $noformat == 0 ]; then
+    printf "$@" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
+  else
+    printf "$@" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
+  fi
 }
 
 xit() { # exit but with a bit of additional clean-up

@@ -8,6 +8,10 @@
       "compilername": "np_compilername",
       "ccompiler": "np_ccompiler",
       "cppcompiler": "np_cppcompiler",
+      "linker": "np_linker",
+      "ccompilationcommand": "np_ccompilationcommand",
+      "cppcompilationcommand": "np_cppcompilationcommand",
+      "linkcommand": "np_linkcommand",
       "defaultcincludedirs": [
         "np_defaultcincludedirs"
       ],
