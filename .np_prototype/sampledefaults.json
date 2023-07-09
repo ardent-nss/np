@@ -1,0 +1,178 @@
+{
+  "d_projectname": "cpp_playground",
+  "d_cstdversion": "gnu23",
+  "d_cppstdversion": "gnu++23",
+  "d_defaultcompilationthreads": 4,
+  "d_compilers": [
+    {
+      "d_compilername": "gcc",
+      "d_ccompiler": "gcc",
+      "d_cppcompiler": "g++",
+      "d_linker": "ld",
+      "d_ccompilationcommand": "%{WIP}",
+      "d_cppcompilationcommand": "%{WIP}",
+      "d_linkcommand": "%{WIP}",
+      "d_defaultcincludedirs": [
+        "/usr/local/include/c++/13.1.1",
+        "/usr/local/include/c++/13.1.1/aarch64-unknown-linux-gnu",
+        "/usr/include/aarch64-linux-gnu"
+      ],
+      "d_defaultcppincludedirs": [
+        "/usr/local/include/c++/13.1.1",
+        "/usr/local/include/c++/13.1.1/aarch64-unknown-linux-gnu",
+        "/usr/include/aarch64-linux-gnu"
+      ],
+      "d_defaultlibdirs": [
+        "/usr/local/lib/gcc/aarch64-unknown-linux-gnu/13.1.1",
+        "/usr/lib/gcc/aarch64-linux-gnu/13"
+      ]
+    }
+  ],
+  "d_configurations": [
+    {
+      "d_configname": "cpp_playground_la64",
+      "d_type": "exe",
+      "d_os": "linux",
+      "d_arch": "arm64",
+      "d_compilationthreads": 0,
+      "d_compiler": "gcc",
+      "d_bindir": "bin/",
+      "d_objdir": "obj/",
+      "d_gccargs": [
+        "-Wall"
+      ],
+      "d_gppargs": [
+        "-Wall"
+      ],
+      "d_sourcefiles": [
+        "src/main.cpp",
+        {
+          "d_srcfilepath": "src/physics.cpp",
+          "d_language": "c++",
+          "d_languageversion": "gnu++17",
+          "d_specialarguments": [
+            "-march=armv8a"
+          ],
+          "d_customprecommands": [
+            "ls -l"
+          ],
+          "d_custompostcommands": [
+            "rm obj/newtonsphere.o"
+          ],
+          "d_sourcecompilationoverride": []
+        }
+      ],
+      "d_cincludedirs": [
+        "%{compilers[gcc].defaultcincludedirs}"
+      ],
+      "d_cppincludedirs": [
+        "%{compilers[gcc].defaultcppincludedirs}"
+      ],
+      "d_libdirs": [
+        "%{compilers[gcc].defaultlibdirs}"
+      ],
+      "d_ldargs": [
+        "--long-plt"
+      ],
+      "d_ldlibs": [
+        "-lglfw3"
+      ],
+      "d_precompilationcommands": [
+        "sudo blahblah"
+      ],
+      "d_postcompilationcommands": [
+        "sudo reboot"
+      ],
+      "d_fullcompilationoverride": [],
+      "d_prelinkcommands": [
+        "./preparelink --hmmmmmmmmmmm"
+      ],
+      "d_postlinkcommands": [
+        "printf \"I'M TRAPPED IN THE MATRIX HEEEEEELP\""
+      ],
+      "d_fulllinkoverride": []
+    }
+  ],
+  "d_downloaders": [
+    {
+      "d_downloadername": "wget",
+      "d_downloadercommands": [
+        "wget \"%{downloadurl}\" -O %{downloadfilename}"
+      ]
+    }
+  ],
+  "d_extractors": [
+    {
+      "d_extractorname": "unzip",
+      "d_extractorcommands": [
+        "unzip %{extractpath} -d %{extractdir}"
+      ]
+    }
+  ],
+  "d_dependencies": [
+    {
+      "d_libname": "glfw",
+      "d_libpath": "_deps/glfw3",
+      "d_libarchive": "_deps/_archives/glfw3.7z",
+      "d_libdir": "_deps/glfw3-ots",
+      "d_libdownloads": [
+        {
+          "d_libdownloadname": "glfw_github",
+          "d_libdownloadurl": "https://github.com/glfw/glfw/releases/download/3.3.8/glfw-3.3.8.zip",
+          "d_savetofilename": "_deps/tmp/glfw-extract.zip",
+          "d_libdownloader": "wget",
+          "d_libdownloadoverride": [],
+          "d_libarchivetype": "zip",
+          "d_libbextractionpwd": "_deps/tmp",
+          "d_libextractor": "unzip",
+          "d_libextractionoverride": []
+        }
+      ],
+      "d_libcompilationthreads": 3,
+      "d_libbuildpwd": "%{dependencies[glfw].activelibdir}",
+      "d_libbuildcommands": [
+        "./configure --enable-vulkan",
+        "make -j%{dependencies[glfw].libcompilationthreads}"
+      ],
+      "d_libexistverification": [
+        "_deps/glfw/build/lib/libglfw3.a",
+        "_deps/glfw/build/lib/libsomesillyvulkanwrapper.a"
+      ],
+      "d_fulldependencyhandlingoverride": []
+    }
+  ],
+  "d_bundles": [
+    {
+      "d_bundlename": "kilochad",
+      "d_bconfigurationstobuild": [
+        "cpp_playground_la64"
+      ],
+      "d_blibrariestobuild": [
+        "glfw"
+      ],
+      "d_fullbundleoverride": []
+    }
+  ],
+  "d_megabundles": [
+    {
+      "d_megabundlename": "megachad",
+      "d_mbbundlestobuild": [
+        "kilochad"
+      ],
+      "d_mblibrariestobuild": [],
+      "d_fullmegabundleoverride": []
+    }
+  ],
+  "d_bigbangs": [
+    {
+      "d_bigbangname": "gigachad",
+      "d_bbmegabundlestobuild": [
+        "megachad"
+      ],
+      "d_bblibrariestobuild": [],
+      "d_fullbigbangoverride": []
+    }
+  ],
+  "d_vscodeintegration": true,
+  "d_vscodefolder": ".vscode"
+}
