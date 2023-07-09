@@ -21,8 +21,8 @@ These are the versions of tools that I developed this script with, but other ver
 * `jq` 1.6
 * `sed` 4.9
 * **Optional:** A relatively modern terminal that supports 24-bit true color
-  - If your terminal outputs the raw escape sequences and causes inconveniences then uncomment line 5 in the script
-  - (Modern terminals should automatically remove escape sequences which it can't display, FYI.)
+  - If your terminal outputs the raw escape sequences and causes inconveniences then uncomment line 5 in the script or always run the script with `-f` as the first argument.
+  - (Modern terminals should automatically remove escape sequences which they can't display, FYI.)
 
 ## Contributing
 Take a look at issue [#2](https://github.com/HackerDaGreat57/np/issues/2) and get yourself a sweet spot on [CONTRIBUTORS.md](https://github.com/HackerDaGreat57/np/blob/main/CONTRIBUTORS.md)!
