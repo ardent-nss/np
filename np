@@ -16,10 +16,11 @@ if [[ $noformat != 1 ]]; then # If the user uncommented line 5 then there's no n
 fi
 
 nprint() { # printf with rudimentary line wrapping
+  twidth=$(($(tput cols)+5)) # fmt likes to keep an extra buffer of about 5 characters to the right, we don't need that.
   if [ $noformat == 0 ]; then
-    printf "$@" | fmt -s -w $(tput cols) -g $(tput cols) # fmt wraps lines neatly if terminal width is less than optimal
+    printf "$@" | fmt -s -w $twidth -g $twidth # fmt wraps lines neatly if terminal width is less than optimal
   else
-    printf "$@" | fmt -s -w $(tput cols) -g $(tput cols) | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
+    printf "$@" | fmt -s -w $twidth -g $twidth | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
   fi
 }
 
@@ -50,12 +51,12 @@ helpmenu() {
   nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
 To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
 \033[4mGeneral options:\033[0m
-  %-30bdisplay this help page
-  %-30bdisplay the version number of the script (${scriptversion})
-  -n | --no-\033[4mf\033[0mormatting\tdo not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  -d | --\033[4md\033[0mocumentation\tdisplay the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
-  -m | --\033[4mm\033[0make-defaults\tcreate a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
-  [PATH]\tSpecify a specific place to put the generated file by typing PATH
+  %-51b  display this help page
+  %-51b  display the version number of the script (${scriptversion})
+  %-51b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
+  %-51b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
+  %-51b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+  %70b  Specify a specific place to put the generated file by typing PATH
 
 \033[4mNew project generation options:\033[0m
   -n | --\033[4mn\033[0mo-defaults\tDon't replace values in \033[38;2;57;255;60mproject.json\033[0m with defaults in \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m
@@ -64,10 +65,10 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
 
 \033[4mOptions for existing projects:\033[0m
   -r | --\033[4mr\033[0megenerate\tRegenerate the build script (must be done every time \033[38;2;57;255;60mproject.json\033[0m is modified to reflect changes)
-" "-h | --\033[4mh\033[0melp" "-v | --\033[4mv\033[0mersion"
+" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation" "-m \033[38;2;225;225;225m|\033[0m --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
   xit
 }
-
+%-51b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np)
 display_documentation() {
   nprint "\033[1m\033[38;2;57;255;60mproject.json\033[0m\033[1m documentation\033[0m:\n
   \033[38;2;141;218;255mprojectname\033[0m [\033[38;2;255;226;141m\033[3mstring\033[0m]: a short, computer-friendly name for the project. Cannot contain characters other than a-z, A-Z, 0-9, and _ (underscore).\n

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+noformat=0 # Just for compatibility
+
+lprint() {
+  esc=${1@Q}
+  echo "${esc:2:-1}"
+}
+
+eprint() {
+  echo $1 | sed -z 's/\t/\\t/g;s/\n/\\n/g'
+}
+
+nprint() { # printf with rudimentary line wrapping
+  twidth=$(($(tput cols)+5)) # fmt likes to keep an extra buffer of about 5 characters to the right, we don't need that.
+  if [ $noformat == 0 ]; then
+    printf "$@" | fmt -s -w $twidth -g $twidth # fmt wraps lines neatly if terminal width is less than optimal
+  else
+    printf "$@" | fmt -s -w $twidth -g $twidth | sed $'s/\033\[[0-9;]*m//g' # Remove all formatting escape sequences if noformat=1
+  fi
+
+  longline=$(wc -L <<< $(lprint "$1"))
+  printf "\n\nLongest line is \033[38;2;57;255;60m${longline} characters long\033[0m\n"
+}
+
+eprint "\033[38;2;57;255;60m.np/project.json\033[0m written successfully.
+  Now, we are doing some heavy testing. This line is exactly 80 characters long.
+
+%-51b  display the documentation for \033[38;2;157;255;60mproject.json\033[0m (which is used to configure projects created with np)" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation"
