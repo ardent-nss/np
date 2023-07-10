@@ -8,7 +8,21 @@ lprint() {
 }
 
 eprint() {
-  echo $1 | sed -z 's/\t/\\t/g;s/\n/\\n/g'
+  lines=()
+
+  # Read each line into a separate variable
+  while IFS= read -r line; do
+    lines+=("$line")
+  done <<< $(printf "$@")
+
+  # Print the individual variables
+  longestline=50 # Initialize the variable that will hold the length of the longest line recorded so far
+  for ((i = 0; i < ${#lines[@]}; i++)); do
+    currentline=$(printf "Line %d: %s\n" "$((i+1))" "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
+    if [ "$longestline" -lt "${#currentline}" ]; then
+      longestline=${#currentline}
+    fi
+  done
 }
 
 nprint() { # printf with rudimentary line wrapping
