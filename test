@@ -42,7 +42,7 @@ abc.
 echo
 echo
 
-printf ".np/project.json written successfully.
+nprint ".np/project.json written successfully.
   Now, we are doing some heavy testing. This line is exactly 80 characters long.
 
 abc.
