@@ -25,19 +25,44 @@ nprint() { # printf with optimized line wrapping
       printf "\r\e[0Knprint: skipping"
       printf "\r\e[0K%b" "${lines[i]}\n"
     else
-      printf "\r\e[0Knprint: wrapping $i\n"
+      printf "\r\e[0Knprint: wrapping $i"
 
       matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
 
       index=0
       while IFS=':' read -r position _; do
-        printf "Split point %d: %d\n" "$((++index))" "$position"
+        printf "\r\e[0Knprint: split point %d: %d" "$((++index))" "$position"
         if [[ $position -le $(tput cols) ]]; then
-          printf "nprint: viable split point %d\n" "$position"
+          printf "\r\e[0Knprint: viable split point %d" "$position"
           splitpoint=$position
         fi
       done <<< "$matches"
+      printf "\r\e[0K"
+
+      wrappingdone=0
+      #printf "$splitpoint\n"
+      while [[ $wrappingdone != 1 ]]; do
+        printf "\r\e[0Knprint: splitpoint: $splitpoint"
+
+        start=1
+        stop=$((splitpoint+1))
+        firstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
+        printf "\r\e[0K$firstline\n"
+
+        # start=$((currentlinelength - splitpoint))
+        # stop=$currentlinelength
+        # printf "\r\e[0Knprint: cutting $start - $currentlinelength"
+        # secondline=$(printf "$currentline" | cut -c $start-$(($stop))) # Cut the second line from the first
+        # secondlinelength=${#secondline}
+        # if [[ $secondlinelength -le $(tput cols) ]]; then
+        #   printf "\r\e[0Knprint: second line is good"
+        #   printf "\r\e[0K$secondline\n"
+        # fi
+
+        wrappingdone=1
+      done
     fi
+    printf "\r\e[0K"
   done
 }
 
@@ -47,6 +72,6 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   %-51b  display this help page
   %-51b  display the version number of the script (${scriptversion})
   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some quirks in the implementation
+  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes
   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
   %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d | --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
