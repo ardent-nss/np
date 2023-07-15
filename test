@@ -1,64 +1,52 @@
 #!/bin/bash
 
 noformat=0 # Just for compatibility
-#rm c
-#rm m
+scriptversion=0.0.1.0
 
 nprint() { # printf with optimized line wrapping
-  printf "nprint: init\n"
+  printf "nprint: init"
 
   lines=()
   while IFS= read -r line; do # Read each line into a separate variable
     lines+=("$line")
   done <<< $(printf "$@") # printf %<blah blah> replacement is done before feeding the output to the array.
 
-  # for ((i = 0; i < ${#lines[@]}; i++)); do
-  #   printf "\b${lines[i]}\n"
-  # done
   for ((i = 0; i < ${#lines[@]}; i++)); do # We will be wrapping each input line separately
-    if [ $i -gt $(((${#lines[@]}+1) / 2)) ]; then # This is a fix for a very strange bug that caused nprint to print stuff *twice*
-      break
-    fi
+    #if [ $i -gt $(((${#lines[@]}+1) / 2)) ]; then # This is a fix for a very strange bug that caused nprint to print stuff *twice*
+    #  break
+    #fi
 
-    printf "nprint: line $i\n"
+    printf "\r\e[0Knprint: line $i"
 
-    currentline=$(printf "${lines[i]}\n" | sed $'s/\033\[[0-9;]*m//g')
+    currentline=$(printf "%b" "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
     currentlinelength=${#currentline}
 
     if [ "$currentlinelength" -le "$(tput cols)" ]; then
-      printf "nprint: skipping\n"
-      printf "%b\n" "${lines[i]}"
-      printf "len: $currentlinelength\n"
+      printf "\r\e[0Knprint: skipping"
+      printf "\r\e[0K%b" "${lines[i]}\n"
     else
-      printf "nprint: wrapping $i"
-      echo
- 
-      matches=$(grep -z -b -o "[/\\\ -]" <<< "$currentline") # Find all split points
+      printf "\r\e[0Knprint: wrapping $i\n"
 
-      #matches=$(grep -b -o "[ /\\\-]" <<< "$currentline")
-      echo $currentline > c$i
-      echo $matches > m$i
+      matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
 
       index=0
       while IFS=':' read -r position _; do
         printf "Split point %d: %d\n" "$((++index))" "$position"
+        if [[ $position -le $(tput cols) ]]; then
+          printf "nprint: viable split point %d\n" "$position"
+          splitpoint=$position
+        fi
       done <<< "$matches"
     fi
   done
 }
 
-nprint "Lorem-ipsum dolor\sit/amet, const adealpicier eait hmmmmddd u3jh5uk3h5u 3u5h3uih5u3h5u3h5ui3h5  53uh5iu3h5i3h5i h35h iu3h5 iu3h5uh3 uh3u h3iu5hui 3hk
-\033[38;2;57;255;60m.np/project.json\033[0m written successfully.
-
-%-21b  aaaaaaaadisplay the adealpicier eait hmmmmddd documentation for \033[38;2;157;255;60mproject.json\033[0m (which is used to configure projects created with np)
-
-__Now, we are doing some heavy testing. This line is exactly 80 characters long.
-
-abcd.
-
-junk
-this
-sa
-sss" "-d | --documentationaaaaaaaaaaaaaaa"
-
-#-d | --documentation  display the documentation for project.json (which is used to configure projects created with np)
+nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
+To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
+\033[4mGeneral options:\033[0m
+  %-51b  display this help page
+  %-51b  display the version number of the script (${scriptversion})
+  %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
+  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some quirks in the implementation
+  %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+  %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d | --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
