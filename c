@@ -1,1 +1,0 @@
-display the documentation for project.json (which is used to configure projects created with np)Lorem ipsum dolor sit amet, const adelpicier elait hmmmmddd u3jh5uk3h5u 3u5h3uih5u3h5u3h5ui3h5 53uh5iu3h5i3h5i h35h iu3h5 iu3h5uh3 uh3u h3iu5hui 3hk
