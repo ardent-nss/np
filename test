@@ -21,10 +21,26 @@ nprint() { # printf with optimized line wrapping
     currentlinelength=${#currentline}
 
     if [ "$currentlinelength" -le "$(tput cols)" ]; then
-      printf "nprint: skipping"
+      printf "\r\e[0Knprint: skipping"
       printf "\r\e[0K%b" "${lines[i]}\n"
     else
-      printf " too long!\n"
+      printf "\r\e[0Knprint: wrapping $i"
+ 
+      matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
+      #reversed_string=$(printf "%s" "$currentline" | tac -rs '.')
+      #reversed_length=${#reversed_string}
+      reversed_length=$currentlinelength
+      echo
+
+      index=0
+      while IFS=':' read -r byte_offset _; do
+        byte_offset=${byte_offset%:*}  # Remove the trailing colon
+        char_position=$(awk -v offset="$byte_offset" -v len="$length" 'BEGIN{print offset + len - 1}')
+        printf "Split point %d: %d\n" "$((++index))" "$char_position"
+        if [[ $char_position -le $(tput cols) ]]; then
+          printf "$char_position is a valid split point.\n"
+        fi
+      done <<< "$matches"
     fi
   done
 
@@ -44,12 +60,4 @@ abc.
 %-21b  display the documentation for \033[38;2;157;255;60mproject.json\033[0m (which is used to configure projects created with np)" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation
 " "-d | --documentation"
 
-# echo
-# echo
-
-# nprint ".np/project.json written successfully.
-#   Now, we are doing some heavy testing. This line is exactly 80 characters long.
-
-# abc.
-
-# %-51b  display the documentation for project.json (which is used to configure projects created with np)" "-d | --documentation" | fmt -s -w $((longestline)) -g $((longestline))
+#-d | --documentation   display the documentation for project.json (which is used to configure projects created with np)
