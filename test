@@ -48,7 +48,7 @@ nprint() { # printf with optimized line wrapping
         fi
       done <<< "$matches"
 
-      allescapesequences=$(grep -o -P '\\033\[[^m]*m' <<< "$currentlineformatted")
+      allescapesequences=$(printf "$currentlineformatted" | grep -oP '(?<=\033\[).*?(?=m)')
       echo $allescapesequences > q
 
       while IFS= read -r allescapesequences; do
