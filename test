@@ -47,56 +47,25 @@ nprint() { # printf with optimized line wrapping
           break
         fi
       done <<< "$matches"
-
-      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m')
-      #numescapechars=$((${#allescapesequences}-$(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c))) > q
-      numescapechars_subtract=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in the file
-      echo $numescapechars_subtract > qt
-      echo $allescapesequences > q
-      numescapechars=$((${#allescapesequences}-$numescapechars_subtract))
-      echo $numescapechars > qq
-
-      while IFS= read -r allescapesequences; do
-        sequencelength=${#allescapesequences}
-        totalsequenceslength=$((totalsequenceslength+sequencelength))
-        printf "\r\e[0Knprint: new total length of all escape sequences in line: $totalsequencelength"
-      done <<< "$allescapesequences"
-      printf "\r\e[0K"
-
       wrappingdone=0
       #printf "$splitpoint\n"
       printf "\r\e[0Knprint: splitpoint: $splitpoint"
 
+      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m')
+      numescapesequences=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in the file
+      printf "\r\e[0Knprint: total number of escape sequences $numescapesequences"
+      numescapechars=$((${#allescapesequences}-$numescapesequences))
+      printf "\r\e[0Knprint: total number of escape chars $numescapechars"
+      echo $numescapesequences > qt
+      echo $allescapesequences > q
+      echo $numescapechars > qq
+
       start=1
-      stop=$((splitpoint+totalsequenceslength))
-      firstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
+      stop=$((splitpoint+numescapechars))
+      echo $stop > st
+      firstline=$(printf "${lines[i]}" | cut -c $start-$stop)
+      printf "\r\e[0K$firstline\n"
       echo $firstline > f
-
-      thisescapesequences=$(grep -o -P '\\033\[[^m]*m' <<< "$firstline")
-      #echo $thisescapesequences > q
-
-      while IFS= read -r thisescapesequences; do
-        thissequencelength=${#thisescapesequences}
-        thistotalsequenceslength=$((thistotalsequenceslength+thissequencelength))
-        printf "\r\e[0Knprint: new total length of all escape sequences in this line: $totalthissequencelength"
-      done <<< "$thisescapesequences"
-
-      start=1
-      stop=$((splitpoint+thistotalsequenceslength))
-      echo $stop > t
-      thisfirstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
-
-      printf "\r\e[0K$thisfirstline\n"
-
-      # start=$((currentlinelength - splitpoint))
-      # stop=$currentlinelength
-      # printf "\r\e[0Knprint: cutting $start - $currentlinelength"
-      # secondline=$(printf "$currentline" | cut -c $start-$(($stop))) # Cut the second line from the first
-      # secondlinelength=${#secondline}
-      # if [[ $secondlinelength -le $(tput cols) ]]; then
-      #   printf "\r\e[0Knprint: second line is good"
-      #   printf "\r\e[0K$secondline\n"
-      # fi
     fi
     printf "\r\e[0K"
   done
