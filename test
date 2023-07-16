@@ -3,7 +3,7 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-rm c m s f t q # Debugging stuff
+rm c m s f t q qt qq # Debugging stuff
 
 nprint() { # printf with optimized line wrapping
   printf "nprint: init"
@@ -48,8 +48,13 @@ nprint() { # printf with optimized line wrapping
         fi
       done <<< "$matches"
 
-      allescapesequences=$(printf "$currentlineformatted" | grep -oP '(?<=\033\[).*?(?=m)')
+      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m')
+      #numescapechars=$((${#allescapesequences}-$(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c))) > q
+      numescapechars_subtract=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in the file
+      echo $numescapechars_subtract > qt
       echo $allescapesequences > q
+      numescapechars=$((${#allescapesequences}-$numescapechars_subtract))
+      echo $numescapechars > qq
 
       while IFS= read -r allescapesequences; do
         sequencelength=${#allescapesequences}
