@@ -3,7 +3,8 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-rm c m s f t q qt qq aa # Debugging stuff
+rm -rfv dbg/* # Debugging stuff
+#mkdir -p dbg
 
 nprint() { # printf with optimized line wrapping
   printf "nprint: init"
@@ -15,7 +16,7 @@ nprint() { # printf with optimized line wrapping
 
   for ((i = 0; i < ${#lines[@]}; i++)); do # We will be wrapping each input line separately
     if [[ i -eq 0 ]]; then
-      printf "\r\e[12Dnprint: line $i"
+      printf "\r\e[0Knprint: line $i"
     fi
 
     currentline=$(printf "%b" "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
@@ -30,18 +31,18 @@ nprint() { # printf with optimized line wrapping
       printf "\r\e[0Knprint: wrapping $i"
 
       matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
-      echo $currentline > c
-      echo $matches > m
+      printf "$currentline" > dbg/currentline
+      echo $matches > dbg/matches
 
       while IFS=':' read -r position _; do
-        printf "\r\e[0Knprint: split point %d: %d" "$((++index))" "$position"
+        printf "nprint: split point %d: %d\n" "$((++index))" "$position"
         if [[ $position -le $(tput cols) ]]; then
-          printf "\r\e[0Knprint: viable split point %d" "$position"
+          printf "nprint: viable split point %d \n" "$position"
           splitpoint=$position
-          echo $splitpoint > s
+          echo $splitpoint > dbg/splitpoint
         else
-          printf "\r\e[0Knprint: not finding unnecessary split points" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
-          break
+          printf "nprint: not finding unnecessary split points\n" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
+          #break
         fi
       done <<< "$matches"
       wrappingdone=0
@@ -49,29 +50,33 @@ nprint() { # printf with optimized line wrapping
       printf "\r\e[0Knprint: splitpoint: $splitpoint"
 
       allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m')
-      numescapesequences=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in the file
+      allescapesequencescount=$(($(printf "$allescapesequences" | awk '{print NF}' | wc -c) / 2))
+      printf "$allescapesequencescount" > dbg/allescapesequencescount
+      numescapesequences=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in this line
       printf "\r\e[0Knprint: total number of escape sequences $numescapesequences"
       numescapechars=$((${#allescapesequences}-$numescapesequences))
       printf "\r\e[0Knprint: total number of escape chars $numescapechars"
-      echo $numescapesequences > qt
-      echo $allescapesequences > q
-      echo $numescapechars > qq
+      echo $numescapesequences > dbg/numescapesequences
+      echo $allescapesequences > dbg/allescapesequences
+      echo $numescapechars > dbg/numescapechars
 
-      printf "$currentlineformatted" | grep -o '\033\[[^\033]*[0-9]m' | wc -l > aa
+      printf "$currentlineformatted" > dbg/currentlineformatted
+      printf "$currentlineformattedlength" > dbg/currentlineformattedcount
 
       start=1
       stop=$((splitpoint+numescapechars))
-      echo $stop > st
+      echo $stop > stop
       firstline=$(printf "${lines[i]}" | cut -c $start-$stop)
       printf "\r\e[0K$firstline\n"
-      printf "$firstline" > f
+      printf "$firstline" > dbg/firstline
+      printf "${#firstline}" > dbg/firstlinecount
     fi
     printf "nprint: done wrapping line $i"
     ilength=${#i}
-    printf "\r\e[$((27+ilength))D"
+    printf "\r\e[0K"
   done
   ilength=${#i}
-  printf "\r\e[$((27+ilength))D"
+  printf "\r\e[0K"
 }
 
 nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
@@ -80,12 +85,20 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   %-51b  display this help page
   %-51b  display the version number of the script (${scriptversion})
   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some even more wonderfullous changes
+  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some even more
   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
-  %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d | --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
+  %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
+
+# nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
+# To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
+# \033[4mGeneral options:\033[0m
+#   %-51b  display this help page
+#   %-51b  display the version number of the script (${scriptversion})
+#   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty and if some things go wrong and the world ends)
+#   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+#   %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
 
 printf "
-
 this is a line and "
 
-nprint "i hope that the debug messages will not cause the last part to disappear because that would be a shame and i would need to make a million tiktok videos about it!"
+#nprint "i hope that the debug messages will not cause the last part to disappear because that would be a shame and i would need to make a million tiktok videos about it!"
