@@ -35,36 +35,35 @@ nprint() { # printf with optimized line wrapping
       echo $matches > dbg/matches
 
       while IFS=':' read -r position _; do
-        printf "nprint: split point %d: %d\n" "$((++index))" "$position"
+        printf "\r\e[0Knprint: split point %d: %d" "$((++index))" "$position"
         if [[ $position -le $(tput cols) ]]; then
-          printf "nprint: viable split point %d \n" "$position"
+          printf "\r\e[0Knprint: viable split point %d" "$position"
           splitpoint=$position
           echo $splitpoint > dbg/splitpoint
         else
-          printf "nprint: not finding unnecessary split points\n" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
+          printf "\r\e[0Knprint: not finding unnecessary split points" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
           #break
         fi
       done <<< "$matches"
-      wrappingdone=0
-      #printf "$splitpoint\n"
+      wrappingdone=0 # Temporary (will be used later)
       printf "\r\e[0Knprint: splitpoint: $splitpoint"
 
-      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m')
-      allescapesequencescount=$(($(printf "$allescapesequences" | awk '{print NF}' | wc -c) / 2))
+      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m' | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed 's/ //g') # Get all escape sequences in the line
+      allescapesequencescount=$(($(printf "$allescapesequences" | awk '{print NF}' | wc -c) / 2)) # Get the total number of escape sequences in the whole line
       printf "$allescapesequencescount" > dbg/allescapesequencescount
-      numescapesequences=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c)-1)) # Get the total number of escape sequences in this line
+      numescapesequences=$(($(printf "$allescapesequences" | tr -cd '\x20\t' | wc -c) / 2)) # Get the total number of escape sequences in this line
       printf "\r\e[0Knprint: total number of escape sequences $numescapesequences"
-      numescapechars=$((${#allescapesequences}-$numescapesequences))
-      printf "\r\e[0Knprint: total number of escape chars $numescapechars"
+      allescapechars=$((${#allescapesequences}-($allescapesequencescount-1)))
+      printf "\r\e[0Knprint: total number of escape chars $allescapechars"
       echo $numescapesequences > dbg/numescapesequences
       echo $allescapesequences > dbg/allescapesequences
-      echo $numescapechars > dbg/numescapechars
+      echo $allescapechars > dbg/allescapechars
 
       printf "$currentlineformatted" > dbg/currentlineformatted
       printf "$currentlineformattedlength" > dbg/currentlineformattedcount
 
       start=1
-      stop=$((splitpoint+numescapechars))
+      stop=$((splitpoint+allescapechars))
       echo $stop > stop
       firstline=$(printf "${lines[i]}" | cut -c $start-$stop)
       printf "\r\e[0K$firstline\n"
