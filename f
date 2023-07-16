@@ -1,1 +1,1 @@
--d | --[4md[0mocumentation display the documentation for [38;2;57;255;60mproject.json[0m (which is used to configure projects created with np) also note that there are
+i hope that the debug messages will not cause the last part to disappear because that would be a shame and i would 

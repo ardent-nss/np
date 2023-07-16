@@ -3,7 +3,7 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-rm c m s f t q qt qq # Debugging stuff
+rm c m s f t q qt qq aa # Debugging stuff
 
 nprint() { # printf with optimized line wrapping
   printf "nprint: init"
@@ -14,11 +14,9 @@ nprint() { # printf with optimized line wrapping
   done <<< $(printf "$@") # printf %<blah blah> replacement is done before feeding the output to the array.
 
   for ((i = 0; i < ${#lines[@]}; i++)); do # We will be wrapping each input line separately
-    #if [ $i -gt $(((${#lines[@]}+1) / 2)) ]; then # This is a fix for a very strange bug that caused nprint to print stuff *twice*
-    #  break
-    #fi
-
-    printf "\r\e[0Knprint: line $i"
+    if [[ i -eq 0 ]]; then
+      printf "\r\e[12Dnprint: line $i"
+    fi
 
     currentline=$(printf "%b" "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
     currentlinelength=${#currentline}
@@ -35,7 +33,6 @@ nprint() { # printf with optimized line wrapping
       echo $currentline > c
       echo $matches > m
 
-      index=0
       while IFS=':' read -r position _; do
         printf "\r\e[0Knprint: split point %d: %d" "$((++index))" "$position"
         if [[ $position -le $(tput cols) ]]; then
@@ -60,15 +57,21 @@ nprint() { # printf with optimized line wrapping
       echo $allescapesequences > q
       echo $numescapechars > qq
 
+      printf "$currentlineformatted" | grep -o '\033\[[^\033]*[0-9]m' | wc -l > aa
+
       start=1
       stop=$((splitpoint+numescapechars))
       echo $stop > st
       firstline=$(printf "${lines[i]}" | cut -c $start-$stop)
       printf "\r\e[0K$firstline\n"
-      echo $firstline > f
+      printf "$firstline" > f
     fi
-    printf "\r\e[0K"
+    printf "nprint: done wrapping line $i"
+    ilength=${#i}
+    printf "\r\e[$((27+ilength))D"
   done
+  ilength=${#i}
+  printf "\r\e[$((27+ilength))D"
 }
 
 nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
@@ -77,6 +80,12 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   %-51b  display this help page
   %-51b  display the version number of the script (${scriptversion})
   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes
+  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some even more wonderfullous changes
   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
   %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d | --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
+
+printf "
+
+this is a line and "
+
+nprint "i hope that the debug messages will not cause the last part to disappear because that would be a shame and i would need to make a million tiktok videos about it!"
