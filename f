@@ -1,0 +1,1 @@
+-d | --[4md[0mocumentation display the documentation for [38;2;57;255;60mproject.json[0m (which is used to configure projects created with n

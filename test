@@ -3,6 +3,8 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
+rm c m s f t q # Debugging stuff
+
 nprint() { # printf with optimized line wrapping
   printf "nprint: init"
 
@@ -20,14 +22,18 @@ nprint() { # printf with optimized line wrapping
 
     currentline=$(printf "%b" "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
     currentlinelength=${#currentline}
+    currentlineformatted=$(printf "%b" "${lines[i]}")
+    currentlineformattedlength=${#currentlineformatted}
 
     if [ "$currentlinelength" -le "$(tput cols)" ]; then
-      printf "\r\e[0Knprint: skipping"
+      printf "\r\e[0Knprint: writing line as-is"
       printf "\r\e[0K%b" "${lines[i]}\n"
     else
       printf "\r\e[0Knprint: wrapping $i"
 
       matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
+      echo $currentline > c
+      echo $matches > m
 
       index=0
       while IFS=':' read -r position _; do
@@ -35,32 +41,57 @@ nprint() { # printf with optimized line wrapping
         if [[ $position -le $(tput cols) ]]; then
           printf "\r\e[0Knprint: viable split point %d" "$position"
           splitpoint=$position
+          echo $splitpoint > s
+        else
+          printf "\r\e[0Knprint: not finding unnecessary split points" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
+          break
         fi
       done <<< "$matches"
+
+      allescapesequences=$(grep -o -P '\\033\[[^m]*m' <<< "$currentlineformatted")
+      echo $allescapesequences > q
+
+      while IFS= read -r allescapesequences; do
+        sequencelength=${#allescapesequences}
+        totalsequenceslength=$((totalsequenceslength+sequencelength))
+        printf "\r\e[0Knprint: new total length of all escape sequences in line: $totalsequencelength"
+      done <<< "$allescapesequences"
       printf "\r\e[0K"
 
       wrappingdone=0
       #printf "$splitpoint\n"
-      while [[ $wrappingdone != 1 ]]; do
-        printf "\r\e[0Knprint: splitpoint: $splitpoint"
+      printf "\r\e[0Knprint: splitpoint: $splitpoint"
 
-        start=1
-        stop=$((splitpoint+1))
-        firstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
-        printf "\r\e[0K$firstline\n"
+      start=1
+      stop=$((splitpoint+totalsequenceslength))
+      firstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
+      echo $firstline > f
 
-        # start=$((currentlinelength - splitpoint))
-        # stop=$currentlinelength
-        # printf "\r\e[0Knprint: cutting $start - $currentlinelength"
-        # secondline=$(printf "$currentline" | cut -c $start-$(($stop))) # Cut the second line from the first
-        # secondlinelength=${#secondline}
-        # if [[ $secondlinelength -le $(tput cols) ]]; then
-        #   printf "\r\e[0Knprint: second line is good"
-        #   printf "\r\e[0K$secondline\n"
-        # fi
+      thisescapesequences=$(grep -o -P '\\033\[[^m]*m' <<< "$firstline")
+      #echo $thisescapesequences > q
 
-        wrappingdone=1
-      done
+      while IFS= read -r thisescapesequences; do
+        thissequencelength=${#thisescapesequences}
+        thistotalsequenceslength=$((thistotalsequenceslength+thissequencelength))
+        printf "\r\e[0Knprint: new total length of all escape sequences in this line: $totalthissequencelength"
+      done <<< "$thisescapesequences"
+
+      start=1
+      stop=$((splitpoint+thistotalsequenceslength))
+      echo $stop > t
+      thisfirstline=$(printf "${lines[i]}" | cut -c $start-$(($stop)))
+
+      printf "\r\e[0K$thisfirstline\n"
+
+      # start=$((currentlinelength - splitpoint))
+      # stop=$currentlinelength
+      # printf "\r\e[0Knprint: cutting $start - $currentlinelength"
+      # secondline=$(printf "$currentline" | cut -c $start-$(($stop))) # Cut the second line from the first
+      # secondlinelength=${#secondline}
+      # if [[ $secondlinelength -le $(tput cols) ]]; then
+      #   printf "\r\e[0Knprint: second line is good"
+      #   printf "\r\e[0K$secondline\n"
+      # fi
     fi
     printf "\r\e[0K"
   done
