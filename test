@@ -8,6 +8,7 @@ rm -rfv dbg/* # Debugging stuff
 
 nprint() { # printf with optimized line wrapping
   printf "nprint: init"
+  cols=$(tput cols)
 
   lines=()
   while IFS= read -r line; do # Read each line into a separate variable
@@ -24,7 +25,7 @@ nprint() { # printf with optimized line wrapping
     currentlineformatted=$(printf "%b" "${lines[i]}")
     currentlineformattedlength=${#currentlineformatted}
 
-    if [ "$currentlinelength" -le "$(tput cols)" ]; then
+    if [ "$currentlinelength" -le "$cols" ]; then
       printf "\r\e[0Knprint: writing line as-is"
       printf "\r\e[0K%b" "${lines[i]}\n"
     else
@@ -48,7 +49,7 @@ nprint() { # printf with optimized line wrapping
 
       while IFS=':' read -r position _; do
         printf "\r\e[0Knprint: split point %d: %d" "$((++index))" "$position"
-        if [[ $position -le $(tput cols) ]]; then
+        if [[ $position -le $cols ]]; then
           printf "\r\e[0Knprint: viable split point %d" "$position"
           splitpoint=$position
           echo $splitpoint > dbg/splitpoint
@@ -65,11 +66,42 @@ nprint() { # printf with optimized line wrapping
       echo $stop > dbg/stop
       firstline=$(printf "${lines[i]}" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g')
       firstlinetoprint=${firstline:start:stop}
-      printf "\r\e[0K$firstlinetoprint\n"
       printf "$firstline" > dbg/firstline
       printf "$firstline" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g' > dbg/firstlineraw
       printf "$firstlinetoprint" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' > dbg/firstlinetoprint
       printf "${#firstlinetoprint}" > dbg/firstlinetoprintcount
+
+      if [[ ${#firstlinetoprint} -gt $cols ]]; then
+        printf "\r\e[0Knprint: oops, this line was longer than I thought! finding alternative..."
+
+        while [[ $thislineisdone != 1 ]]; do
+          for ((k = 1; k < $cols; k++)); do
+            if [[ $thislineisdone -eq 1 ]]; then
+              break
+            fi
+            printf "\r\e[0Knprint: more escape sequences to the right"
+            stop=$((splitpoint+allescapechars-k))
+            firstlinetoprint=${firstline:start:stop}
+
+            if [[ ${#firstlinetoprint} -le $cols ]]; then
+              while read -r validmatches; do
+                if [[ $thislineisdone -eq 1 ]]; then
+                  break 6
+                fi
+                if [[ $validmatches =~ ^[0-9]+$ ]] && [[ $validmatches -eq ${#firstlinetoprint} ]]; then
+                  echo "\r\e[0Knprint: alternative splitpoint ${#firstlinetoprint} identified"
+                  printf "\r\e[0K$firstlinetoprint\n"
+                  thislineisdone=1
+                  break
+                fi
+              done < "$matches"
+            fi
+            #printf "\r\e[0K$firstlinetoprint\n"
+          done
+        done
+      else
+        printf "\r\e[0K$firstlinetoprint\n"
+      fi
     fi
     printf "nprint: done wrapping line $i"
     ilength=${#i}
@@ -85,7 +117,7 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
   %-51b  display this help page
   %-51b  display the version number of the script (${scriptversion})
   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few changes and there are some even more exitential and there is hunger crises and the world is about to and and i really need to get this line to about 321 characters not including the linux subshells
+  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few \033[38;2;45;45;255mchanges\033[0m and there are some even more existential crisis and there is world hunger and the world is about to and and i really need to get this line to about 321 characters not including the linux subshells
   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
   %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
 
