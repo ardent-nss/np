@@ -71,37 +71,49 @@ nprint() { # printf with optimized line wrapping
       printf "$firstlinetoprint" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' > dbg/firstlinetoprint
       printf "${#firstlinetoprint}" > dbg/firstlinetoprintcount
 
-      if [[ ${#firstlinetoprint} -gt $cols ]]; then
-        printf "\r\e[0Knprint: oops, this line was longer than I thought! finding alternative..."
+      while read -r validmatches; do
+        if [[ $thislineisdone -eq 1 ]]; then
+          break
+        fi
+        if [[ $validmatches =~ ^[0-9]+$ ]] && [[ $validmatches -eq ${#firstlinetoprint} ]]; then
+          #printf "\r\e[0Knprint: alternative splitpoint ${#firstlinetoprint} identified"
+          #printf "\r\e[0K$firstlinetoprint\n"
+          thislineisdone=1
+          break
+        fi
+      done < "$matches"
 
-        while [[ $thislineisdone != 1 ]]; do
-          for ((k = 1; k < $cols; k++)); do
-            if [[ $thislineisdone -eq 1 ]]; then
-              break
-            fi
-            printf "\r\e[0Knprint: more escape sequences to the right"
-            stop=$((splitpoint+allescapechars-k))
-            firstlinetoprint=${firstline:start:stop}
+    #   if [[ ${#firstlinetoprint} -gt $cols ]]; then
+    #     printf "\r\e[0Knprint: oops, this line was longer than I thought! finding alternative..."
 
-            if [[ ${#firstlinetoprint} -le $cols ]]; then
-              while read -r validmatches; do
-                if [[ $thislineisdone -eq 1 ]]; then
-                  break 6
-                fi
-                if [[ $validmatches =~ ^[0-9]+$ ]] && [[ $validmatches -eq ${#firstlinetoprint} ]]; then
-                  echo "\r\e[0Knprint: alternative splitpoint ${#firstlinetoprint} identified"
-                  printf "\r\e[0K$firstlinetoprint\n"
-                  thislineisdone=1
-                  break
-                fi
-              done < "$matches"
-            fi
-            #printf "\r\e[0K$firstlinetoprint\n"
-          done
-        done
-      else
-        printf "\r\e[0K$firstlinetoprint\n"
-      fi
+    #     while [[ $thislineisdone != 1 ]]; do
+    #       for ((k = 1; k < $cols; k++)); do
+    #         if [[ $thislineisdone -eq 1 ]]; then
+    #           break
+    #         fi
+    #         printf "\r\e[0Knprint: more escape sequences to the right"
+    #         stop=$((splitpoint+allescapechars-k))
+    #         firstlinetoprint=${firstline:start:stop}
+
+    #         if [[ ${#firstlinetoprint} -le $cols ]]; then
+    #           while read -r validmatches; do
+    #             if [[ $thislineisdone -eq 1 ]]; then
+    #               break 6
+    #             fi
+    #             if [[ $validmatches =~ ^[0-9]+$ ]] && [[ $validmatches -eq ${#firstlinetoprint} ]]; then
+    #               echo "\r\e[0Knprint: alternative splitpoint ${#firstlinetoprint} identified"
+    #               printf "\r\e[0K$firstlinetoprint\n"
+    #               thislineisdone=1
+    #               break
+    #             fi
+    #           done < "$matches"
+    #         fi
+    #         #printf "\r\e[0K$firstlinetoprint\n"
+    #       done
+    #     done
+    #   else
+    #     printf "\r\e[0K$firstlinetoprint\n"
+    #   fi
     fi
     printf "nprint: done wrapping line $i"
     ilength=${#i}
