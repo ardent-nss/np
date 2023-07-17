@@ -1,5 +1,0 @@
-#!/bin/bash
-
-s="hi my name is kayla"
-x=${s:3:16}
-printf "$x"
