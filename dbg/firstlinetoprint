@@ -1,1 +1,1 @@
-  -d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a
+  -d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to configure projects created with np) also note that there are a few \033[38;2;45;45;255mch
