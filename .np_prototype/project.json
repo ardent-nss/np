@@ -1,193 +1,206 @@
 {
-  "projectname": "np_name",
-  "cstdversion": "np_cstdversion",
-  "cppstdversion": "np_cppstdversion",
-  "defaultcompilationthreads": 0,
+  "project_name": "np_name",
+  "c_std_version": "np_cstdversion",
+  "cpp_std_version": "np_cppstdversion",
+  "default_compilation_threads": 0,
+
   "compilers": [
     {
-      "compilername": "np_compilername",
-      "ccompiler": "np_ccompiler",
-      "cppcompiler": "np_cppcompiler",
+      "compiler_name": "np_compilername",
+      "c_compiler": "np_ccompiler",
+      "cpp_compiler": "np_cppcompiler",
       "linker": "np_linker",
-      "ccompilationcommand": "np_ccompilationcommand",
-      "cppcompilationcommand": "np_cppcompilationcommand",
-      "linkcommand": "np_linkcommand",
-      "defaultcincludedirs": [
-        "np_defaultcincludedirs"
-      ],
-      "defaultcppincludedirs": [
-        "np_defaultcppincludedirs"
-      ],
-      "defaultlibdirs": [
-        "np_defaultlibdirs"
-      ]
+
+      "c_compilation_commands": ["np_ccompilationcommand"],
+      "cpp_compilation_command": ["np_cppcompilationcommand"],
+      "link_command": ["np_linkcommand"],
+
+      "default_dirs": {
+        "c_includes": [
+          "np_cincludes"
+        ],
+        "cpp_includes": [
+          "np_cppincludes"
+        ],
+        "libs": [
+          "np_libs"
+        ]
+      }
     }
   ],
   "configurations": [
     {
-      "configname": "np_confname",
+      "config_name": "np_confname",
       "type": "np_type",
       "os": "np_os",
       "arch": "np_arch",
-      "compilationthreads": 0,
+      "compilation_threads": 0,
       "compiler": "np_compiler",
-      "bindir": "np_bindir",
-      "objdir": "np_objdir",
-      "gccargs": [
+      "bin_dir": "np_bindir",
+      "obj_dir": "np_objdir",
+      "gcc_args": [
         "np_gccargs"
       ],
-      "gppargs": [
+      "gpp_args": [
         "np_gppargs"
       ],
-      "sourcefiles": [
+      "source_files": [
         "np_sourcefiles",
         {
-          "srcfilepath": "np_srcfilepath",
+          "src_file_path": "np_srcfilepath",
           "language": "np_language",
-          "languageversion": "np_languageversion",
-          "specialarguments": [
+          "language_version": "np_languageversion",
+          "special_arguments": [
             "np_specialarguments"
           ],
-          "customprecommands": [
+          "custom_pre_commands": [
             "np_customprecommands"
           ],
-          "custompostcommands": [
+          "custom_post_commands": [
             "np_custompostcommands"
           ],
-          "sourcecompilationoverride": [
+          "source_compilation_override": [
             "np_sourcecompilationoverride"
           ]
         }
       ],
-      "cincludedirs": [
+      "options": [
+        {
+          "option_name": "np_optionname",
+          "option_effects": {
+            "test": "t"
+          }
+        }
+      ],
+      "c_include_dirs": [
         "np_cincs"
       ],
-      "cppincludedirs": [
+      "cpp_include_dirs": [
         "np_cppincs"
       ],
-      "libdirs": [
+      "lib_dirs": [
         "np_libdirs"
       ],
-      "ldargs": [
+      "ld_args": [
         "np_ldargs"
       ],
-      "ldlibs": [
+      "ld_libs": [
         "np_ldlibs"
       ],
-      "precompilationcommands": [
+      "pre_compilation_commands": [
         "np_precompilationcommands"
       ],
-      "postcompilationcommands": [
+      "post_compilation_commands": [
         "np_postcompilationcommands"
       ],
-      "fullcompilationoverride": [
+      "full_compilation_override": [
         "np_fullcompilationoverride"
       ],
-      "prelinkcommands": [
+      "pre_link_commands": [
         "np_prelinkcommands"
       ],
       "postlinkcommands": [
         "np_postlinkcommands"
       ],
-      "fulllinkoverride": [
+      "full_link_override": [
         "np_fulllinkoverride"
       ]
     }
   ],
   "downloaders": [
     {
-      "downloadername": "np_downloadername",
-      "downloadercommands": [
+      "downloader_name": "np_downloadername",
+      "downloader_commands": [
         "np_downloadercommands"
       ]
     }
   ],
   "extractors": [
     {
-      "extractorname": "np_extractorname",
-      "extractorcommands": [
+      "extractor_name": "np_extractorname",
+      "extractor_commands": [
         "np_extractorcommands"
       ]
     }
   ],
   "dependencies": [
     {
-      "libname": "np_libname",
-      "libpath": "np_libpath",
-      "libarchive": "np_libarchive",
-      "libdir": "np_libfolder",
-      "libdownloads": [
+      "lib_name": "np_libname",
+      "lib_path": "np_libpath",
+      "lib_archive": "np_libarchive",
+      "lib_dir": "np_libfolder",
+      "lib_downloads": [
         {
-          "libdownloadname": "np_libdownloadname",
-          "libdownloadurl": "np_libdownloadurl",
-          "libsavetofilename": "np_libsavetofilename",
-          "libdownloader": "np_libdownloader",
-          "libdownloadoverride": [
+          "lib_download_name": "np_libdownloadname",
+          "lib_download_url": "np_libdownloadurl",
+          "lib_save_to_filename": "np_libsavetofilename",
+          "lib_downloader": ["np_libdownloader"],
+          "lib_download_override": [
             "np_libdownloadoverride"
           ],
-          "libarchivetype": "np_libarchivetype",
-          "libextractionpwd": "np_libextractionpwd",
-          "libextractor": "np_libextractor",
-          "libextractionoverride": [
+          "lib_archive_type": "np_libarchivetype",
+          "lib_extraction_workdir": "np_libextractionworkdir",
+          "lib_extractor": "np_libextractor",
+          "lib_extraction_override": [
             "np_libextractionoverride"
           ]
         }
       ],
-      "libcompilationthreads": 0,
-      "libbuildpwd": "np_libbuildpwd",
-      "libbuildcommands": [
+      "lib_compilation_threads": 0,
+      "lib_build_workdir": "np_libbuildworkdir",
+      "lib_build_commands": [
         "np_libbuildcommands"
       ],
-      "libexistverification": [
+      "lib_exist_verification": [
         "np_libexistverification"
       ],
-      "fulldependencyhandlingoverride": [
+      "full_dependency_handling_override": [
         "np_fulldependencyhandlingoverride"
       ]
     }
   ],
   "bundles": [
     {
-      "bundlename": "np_bundlename",
-      "bconfigurationstobuild": [
+      "bundle_name": "np_bundlename",
+      "b_configurations_to_build": [
         "np_bconfigurationstobuild"
       ],
-      "blibrariestobuild": [
+      "b_libraries_to_build": [
         "np_blibrariestobuild"
       ],
-      "fullbundleoverride": [
+      "full_bundle_override": [
         "np_fullbundleoverride"
       ]
     }
   ],
   "megabundles": [
     {
-      "megabundlename": "np_megabundlename",
-      "mbbundlestobuild": [
+      "megabundle_name": "np_megabundlename",
+      "mb_bundles_to_build": [
         "np_mbbundlestobuild"
       ],
-      "mblibrariestobuild": [
+      "mb_libraries_to_build": [
         "np_mblibrariestobuild"
       ],
-      "fullmegabundleoverride": [
+      "full_mega_bundle_override": [
         "np_fullmegabundleoverride"
       ]
     }
   ],
   "bigbangs": [
     {
-      "bigbangname": "np_bigbangname",
-      "bbmegabundlestobuild": [
+      "bigbang_name": "np_bigbangname",
+      "bb_megabundles_to_build": [
         "np_bbmegabundlestobuild"
       ],
-      "bblibrariestobuild": [
+      "bb_libraries_to_build": [
         "np_bblibrariestobuild"
       ],
-      "fullbigbangoverride": [
+      "full_bigbang_override": [
         "np_fullbigbangoverride"
       ]
     }
   ],
-  "vscodeintegration": false,
-  "vscodefolder": "np_vscf"
+  "vscode_integration": false,
+  "vscode_folder": "np_vscf"
 }
