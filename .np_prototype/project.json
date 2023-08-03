@@ -11,11 +11,13 @@
       "cpp_compiler": "np_cppcompiler",
       "linker": "np_linker",
 
-      "c_compilation_commands": ["np_ccompilationcommand"],
-      "cpp_compilation_command": ["np_cppcompilationcommand"],
-      "link_command": ["np_linkcommand"],
+      "commands": {
+        "c_compilation": ["np_ccompilation"],
+        "cpp_compilation": ["np_cppcompilation"],
+        "linking": ["np_linking"]
+      },
 
-      "default_dirs": {
+      "default_directories": {
         "c_includes": [
           "np_cincludes"
         ],
@@ -30,63 +32,55 @@
   ],
   "configurations": [
     {
-      "config_name": "np_confname",
+      "name": "np_name",
       "type": "np_type",
       "os": "np_os",
       "arch": "np_arch",
       "compilation_threads": 0,
+      "efficient_rebuild": false,
+
       "compiler": "np_compiler",
       "bin_dir": "np_bindir",
       "obj_dir": "np_objdir",
-      "gcc_args": [
-        "np_gccargs"
-      ],
-      "gpp_args": [
-        "np_gppargs"
-      ],
+      "arguments": {
+        "c_compiler": ["np_ccompiler"],
+        "cpp_compiler": ["np_cppcompiler"],
+        "linker": ["np_linker"]
+      },
+
       "source_files": [
         "np_sourcefiles",
         {
           "src_file_path": "np_srcfilepath",
           "language": "np_language",
           "language_version": "np_languageversion",
-          "special_arguments": [
-            "np_specialarguments"
-          ],
-          "custom_pre_commands": [
-            "np_customprecommands"
-          ],
-          "custom_post_commands": [
-            "np_custompostcommands"
-          ],
-          "source_compilation_override": [
-            "np_sourcecompilationoverride"
-          ]
-        }
-      ],
-      "options": [
-        {
-          "option_name": "np_optionname",
-          "option_effects": {
-            "test": "t"
+
+          "special_arguments": ["np_specialarguments"],
+
+          "custom_commands": {
+            "pre": "np_pre",
+            "post": "np_post",
+            "complete_override": "np_completeoverride"
           }
         }
       ],
-      "c_include_dirs": [
-        "np_cincs"
-      ],
-      "cpp_include_dirs": [
-        "np_cppincs"
-      ],
-      "lib_dirs": [
-        "np_libdirs"
-      ],
-      "ld_args": [
-        "np_ldargs"
-      ],
+
+      "directories": {
+        "c_includes": [
+          "np_cincludes"
+        ],
+        "cpp_includes": [
+          "np_cppincludes"
+        ],
+        "lib_dirs": [
+          "np_libdirs"
+        ]
+      },
+
       "ld_libs": [
         "np_ldlibs"
       ],
+
       "pre_compilation_commands": [
         "np_precompilationcommands"
       ],
