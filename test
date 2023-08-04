@@ -27,7 +27,7 @@ nprint() { # printf with optimized line wrapping
 
     if [ "$currentlinelength" -le "$cols" ]; then
       printf "\r\e[0Knprint: writing line as-is"
-      printf "\r\e[0K%b" "${lines[i]}\n"
+      printf "\r\e[0K${lines[i]}\n"
     else
       printf "\r\e[0Knprint: wrapping $i"
 
@@ -85,7 +85,7 @@ nprint() { # printf with optimized line wrapping
 
       printf "\r\e[0K$firstlinetoprint\n"
 
-      if [[ $firstlinetoprint_noformat_count -gt $(tput cols) ]]; then
+      if [[ $firstlinetoprint_noformat_count -gt $cols ]]; then
         printf "\r\e[0Khouston we have a problem. trying other wrapping method...\n"
 
         while true; do
@@ -96,7 +96,7 @@ nprint() { # printf with optimized line wrapping
           firstlinetoprint_noformat=$(printf "$firstlinetoprint" | sed $'s/\033\[[0-9;]*m//g')
           firstlinetoprint_noformat_count=${#firstlinetoprint_noformat}
 
-          if [[ $firstlinetoprint_noformat_count -gt $(tput cols) ]]; then
+          if [[ $firstlinetoprint_noformat_count -gt $cols ]]; then
             #echo "oh no $t_iter"
             printf "\r\e[0Knprint: trying to wrap again for the ${t_iter}th time"
           else
@@ -111,7 +111,7 @@ nprint() { # printf with optimized line wrapping
         printf "\r\e[0K$firstlinetoprint\n"
       fi
     fi
-    printf "nprint: done wrapping line $i"
+    printf "\r\e[0Knprint: done wrapping line $i"
     ilength=${#i}
     printf "\r\e[0K"
   done
