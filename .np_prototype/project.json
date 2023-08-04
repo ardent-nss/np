@@ -121,6 +121,7 @@
       ]
     }
   ],
+
   "downloaders": [
     {
       "name": "np_name",
