@@ -30,6 +30,7 @@
       }
     }
   ],
+
   "configurations": [
     {
       "name": "np_name",
@@ -58,9 +59,15 @@
           "special_arguments": ["np_specialarguments"],
 
           "custom_commands": {
-            "pre": "np_pre",
-            "post": "np_post",
-            "complete_override": "np_completeoverride"
+            "pre": [
+              "np_pre"
+            ],
+            "post": [
+              "np_post"
+            ],
+            "file_override": [
+              "np_fileoverride"
+            ]
           }
         }
       ],
@@ -77,124 +84,155 @@
         ]
       },
 
+      "dependencies": [
+        "np_dependencies"
+      ],
       "ld_libs": [
         "np_ldlibs"
       ],
 
-      "pre_compilation_commands": [
-        "np_precompilationcommands"
-      ],
-      "post_compilation_commands": [
-        "np_postcompilationcommands"
-      ],
-      "full_compilation_override": [
-        "np_fullcompilationoverride"
-      ],
-      "pre_link_commands": [
-        "np_prelinkcommands"
-      ],
-      "postlinkcommands": [
-        "np_postlinkcommands"
-      ],
-      "full_link_override": [
-        "np_fulllinkoverride"
+      "custom_commands": {
+        "compilation": {
+          "pre": [
+            "np_pre"
+          ],
+          "post": [
+            "np_post"
+          ],
+          "compilation_override": [
+            "np_compilationoverride"
+          ]
+        },
+        "linking": {
+          "pre": [
+            "np_pre"
+          ],
+          "post": [
+            "np_post"
+          ],
+          "linking_override": [
+            "np_linkingoverride"
+          ]
+        }
+      },
+
+      "complete_override": [
+        "np_completeoverride"
       ]
     }
   ],
   "downloaders": [
     {
-      "downloader_name": "np_downloadername",
-      "downloader_commands": [
-        "np_downloadercommands"
+      "name": "np_name",
+      "availability_verification": [
+        "np_availabilityverification"
+      ],
+      "commands": [
+        "np_commands"
       ]
     }
   ],
+
   "extractors": [
     {
-      "extractor_name": "np_extractorname",
-      "extractor_commands": [
-        "np_extractorcommands"
+      "name": "np_name",
+      "availability_verification": [
+        "np_availabilityverification"
+      ],
+      "commands": [
+        "np_commands"
       ]
     }
   ],
+
   "dependencies": [
     {
-      "lib_name": "np_libname",
-      "lib_path": "np_libpath",
-      "lib_archive": "np_libarchive",
-      "lib_dir": "np_libfolder",
-      "lib_downloads": [
+      "name": "np_name",
+      "path": "np_path",
+      "archive": "np_archive",
+      "dir": "np_folder",
+      "downloads": [
         {
-          "lib_download_name": "np_libdownloadname",
-          "lib_download_url": "np_libdownloadurl",
-          "lib_save_to_filename": "np_libsavetofilename",
-          "lib_downloader": ["np_libdownloader"],
-          "lib_download_override": [
-            "np_libdownloadoverride"
+          "download_name": "np_downloadname",
+          "download_url": ["np_downloadurl"],
+          "save_to_filename": ["np_savetofilename"],
+          "downloader": ["np_downloader"],
+          "download_override": [
+            "np_downloadoverride"
           ],
-          "lib_archive_type": "np_libarchivetype",
-          "lib_extraction_workdir": "np_libextractionworkdir",
-          "lib_extractor": "np_libextractor",
-          "lib_extraction_override": [
-            "np_libextractionoverride"
+
+          "archive_type": "np_archivetype",
+          "extraction_workdir": "np_extractionworkdir",
+          "extractor": "np_extractor",
+          "extraction_override": [
+            "np_extractionoverride"
           ]
         }
       ],
-      "lib_compilation_threads": 0,
-      "lib_build_workdir": "np_libbuildworkdir",
-      "lib_build_commands": [
-        "np_libbuildcommands"
+      "compilation_threads": 0,
+      "build_workdir": "np_buildworkdir",
+      "build_commands": [
+        "np_buildcommands"
       ],
-      "lib_exist_verification": [
-        "np_libexistverification"
+
+      "availability_verification": [
+        "np_availabilityverification"
       ],
+
       "full_dependency_handling_override": [
         "np_fulldependencyhandlingoverride"
       ]
     }
   ],
+
   "bundles": [
     {
-      "bundle_name": "np_bundlename",
-      "b_configurations_to_build": [
-        "np_bconfigurationstobuild"
+      "name": "np_name",
+
+      "configurations_to_build": [
+        "np_configurationstobuild"
       ],
-      "b_libraries_to_build": [
-        "np_blibrariestobuild"
+      "libraries_to_build": [
+        "np_librariestobuild"
       ],
       "full_bundle_override": [
         "np_fullbundleoverride"
       ]
     }
   ],
+
   "megabundles": [
     {
-      "megabundle_name": "np_megabundlename",
-      "mb_bundles_to_build": [
-        "np_mbbundlestobuild"
+      "name": "np_name",
+
+      "bundles_to_build": [
+        "np_bundlestobuild"
       ],
-      "mb_libraries_to_build": [
-        "np_mblibrariestobuild"
+      "libraries_to_build": [
+        "np_librariestobuild"
       ],
-      "full_mega_bundle_override": [
+      "full_megabundle_override": [
         "np_fullmegabundleoverride"
       ]
     }
   ],
-  "bigbangs": [
+
+  "bingbangs": [
     {
-      "bigbang_name": "np_bigbangname",
-      "bb_megabundles_to_build": [
-        "np_bbmegabundlestobuild"
+      "name": "np_name",
+
+      "megabundles_to_build": [
+        "np_megabundlestobuild"
       ],
-      "bb_libraries_to_build": [
-        "np_bblibrariestobuild"
+      "libraries_to_build": [
+        "np_librariestobuild"
       ],
-      "full_bigbang_override": [
-        "np_fullbigbangoverride"
+      "full_bingbang_override": [
+        "np_fullbingbangoverride"
       ]
     }
   ],
+
   "vscode_integration": false,
   "vscode_folder": "np_vscf"
 }
