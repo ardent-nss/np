@@ -6,7 +6,7 @@ scriptversion=0.0.1.0
 rm -rfv dbg/* # Debugging stuff
 #mkdir -p dbg
 
-nprint() { # printf with optimized line wrapping
+nprint() { # basically printf but with visual formatting-sensitive line wrapping
   printf "nprint: init"
   cols=$(tput cols)
 
@@ -25,14 +25,14 @@ nprint() { # printf with optimized line wrapping
     currentlineformatted=$(printf "${lines[i]}")
     currentlineformattedlength=${#currentlineformatted}
 
+    currentlineformatted_raw=$(printf "$currentlineformatted" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g')
+    echo "$currentlineformatted_raw" > dbg/currentlineformatted_raw
+
     if [ "$currentlinelength" -le "$cols" ]; then
       printf "\r\e[0Knprint: writing line as-is"
       printf "\r\e[0K${lines[i]}\n"
     else
       printf "\r\e[0Knprint: wrapping $i"
-
-      currentlineformatted_raw=$(printf "$currentlineformatted" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g')
-      echo "$currentlineformatted_raw" > dbg/currentlineformatted_raw
 
       matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
       printf "$currentline" > dbg/currentline
@@ -74,8 +74,7 @@ nprint() { # printf with optimized line wrapping
       start=0
       stop=$((splitpoint+allescapechars))
       echo $stop > dbg/stop
-      currentlineformatted=$(printf "${lines[i]}" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g')
-      echo "$currentlineformatted" > dbg/currentlineformatted2
+
       firstlinetoprint=${currentlineformatted:start:stop}
       firstlinetoprint_noformat=$(printf "$firstlinetoprint" | sed $'s/\033\[[0-9;]*m//g')
       firstlinetoprint_noformat_count=${#firstlinetoprint_noformat}
