@@ -3,130 +3,68 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-rm -rfv dbg/* # Debugging stuff
-#mkdir -p dbg
+_NRINT_VERBOSE=1 # If this is 1, the function will print small temporary messages to indicate what it is processing at any given point in time. Useful for impatient people (like me) who calm down after being assured that the task will eventually finish at some point, not crash entirely. When it is equal to 2, it does not automatically erase debug messages.
 
-nprint() { # basically printf but with visual formatting-sensitive line wrapping
-  printf "nprint: init"
-  cols=$(tput cols)
+printd() { # Debug message printing utility
+  # Takes 2 arguments:
+  #  $1: the debug message string
+  #  $2: the length of the previous debug message to erase, if applicable
 
-  lines=()
-  while IFS= read -r line; do # Read each line into a separate variable
-    lines+=("$line")
-  done <<< $(printf "$@") # printf %<blah blah> replacement is done before feeding the output to the array.
+  case $_NRINT_VERBOSE in
+    0) # Don't print debug messages at all.
+      ;;
 
-  for ((i = 0; i < ${#lines[@]}; i++)); do # We will be wrapping each input line separately
-    if [[ i -eq 0 ]]; then
-      printf "\r\e[0Knprint: line $i"
-    fi
+    1) # Print debug messages and keep them visible until processing has finished.
+       printf "\e[${2}D${1}"
+      ;;
 
-    currentline=$(printf "${lines[i]}" | sed $'s/\033\[[0-9;]*m//g')
-    currentlinelength=${#currentline}
-    currentlineformatted=$(printf "${lines[i]}")
-    currentlineformattedlength=${#currentlineformatted}
-
-    currentlineformatted_raw=$(printf "$currentlineformatted" | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g')
-    echo "$currentlineformatted_raw" > dbg/currentlineformatted_raw
-
-    if [ "$currentlinelength" -le "$cols" ]; then
-      printf "\r\e[0Knprint: writing line as-is"
-      printf "\r\e[0K${lines[i]}\n"
-    else
-      printf "\r\e[0Knprint: wrapping $i"
-
-      matches=$(grep -b -o "[ /\\\-]" <<< "$currentline") # Find all split points
-      printf "$currentline" > dbg/currentline
-      echo $matches > dbg/matches
-
-      allescapesequences=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m' | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed 's/ //g') # Get all escape sequences in the line
-      allescapesequences_raw=$(printf "$currentlineformatted" | grep -oP '\033\[[^\033]*[0-9]m' | cat -v | sed 's/\^/\\033/g' | sed 's/\[\[/\[/g' | sed $'s/\033\[[0-9;]*m//g')
-      allescapesequencescount=$(echo "$allescapesequences" | grep -o '\\033' | wc -l) # Get the total number of escape sequences in the whole line
-      printf "\r\e[0Knprint: total number of escape sequences $numescapesequences"
-      allescapechars=$((${#allescapesequences}-($allescapesequencescount-1)))
-      printf "\r\e[0Knprint: total number of escape chars $allescapechars"
-
-      printf "$allescapesequencescount" > dbg/allescapesequencescount
-      printf "$allescapesequences" > dbg/allescapesequences
-      printf "$allescapesequences_raw" > dbg/allescapesequences_raw
-      printf "$allescapechars" > dbg/allescapechars
-      printf "$currentlineformatted" > dbg/currentlineformatted
-      printf "$currentlineformattedlength" > dbg/currentlineformattedcount
-
-      splitpoints=()
-      splitpoints_numbers=()
-      while IFS=':' read -r position _; do
-        printf "\r\e[0Knprint: split point %d: %d" "$((index++))" "$position"
-        splitpoints_numbers+=($index)
-        if [[ $position -le $cols ]]; then
-          printf "\r\e[0Knprint: viable split point %d" "$position"
-          splitpoint=$position
-          echo $splitpoint > dbg/splitpoint
-
-          splitpoints+=($splitpoint) # Add the splitpoint to the array of splitpoints.
-        else
-          printf "\r\e[0Knprint: not finding unnecessary split points" # We don't need to find split points that are not viable. Possible pressure point for applications printing long lines.
-          break
-        fi
-      done <<< "$matches"
-      printf "\r\e[0Knprint: splitpoint: $splitpoint"
-      printf "%s\n" "${splitpoints[@]}" > dbg/splitpoints
-
-      start=0
-      stop=$((splitpoint+allescapechars))
-      echo $stop > dbg/stop
-
-      firstlinetoprint=${currentlineformatted:start:stop}
-      firstlinetoprint_noformat=$(printf "$firstlinetoprint" | sed $'s/\033\[[0-9;]*m//g')
-      firstlinetoprint_noformat_count=${#firstlinetoprint_noformat}
-
-      echo "$firstlinetoprint_noformat" > dbg/firstlinetoprint_noformat
-      echo "$firstlinetoprint_noformat_count" > dbg/firstlinetoprint_noformat_count
-
-      printf "\r\e[0K$firstlinetoprint\n"
-
-      if [[ $firstlinetoprint_noformat_count -gt $cols ]]; then
-        printf "\r\e[0Khouston we have a problem. trying other wrapping method...\n"
-
-        while true; do
-          t_iter=$((t_iter+1))
-
-          stop=$((splitpoint+t_iter))
-          firstlinetoprint=${currentlineformatted:start:stop}
-          firstlinetoprint_noformat=$(printf "$firstlinetoprint" | sed $'s/\033\[[0-9;]*m//g')
-          firstlinetoprint_noformat_count=${#firstlinetoprint_noformat}
-
-          if [[ $firstlinetoprint_noformat_count -gt $cols ]]; then
-            #echo "oh no $t_iter"
-            printf "\r\e[0Knprint: trying to wrap again for the ${t_iter}th time"
-          else
-            printf "\r\e[0Knprint: possible solution found. checking if it's a valid splitpoint..."
-
-            if [[ " ${splitpoints[*]} " =~ "${stop}" ]]; then
-              echo "e"
-            fi
-          fi
-        done
-      else
-        printf "\r\e[0K$firstlinetoprint\n"
-      fi
-    fi
-    printf "\r\e[0Knprint: done wrapping line $i"
-    ilength=${#i}
-    printf "\r\e[0K"
-  done
-  ilength=${#i}
-  printf "\r\e[0K"
+    2) # Print debug messages and don't erase them
+       printf "$1\n"
+      ;;
+  esac
 }
 
-nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
-To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
-\033[4mGeneral options:\033[0m
-  %-51b  display this help page
-  %-51b  display the version number of the script (${scriptversion})
-  %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
-  %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to \033[38;2;48;255;255mconfigure\033[0m projects created with np) also note that there are a few \033[38;2;45;45;255mchanges\033[0m and there are some even more existential crisis and there is world hunger and the \033[38;2;34;34;34mworld\033[0m is about to and and i really need to get this line to about 321 characters not including the linux subshells and some other strange Rust-based \033[38;2;56;255;255mapplications\033[0m
-  %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
-  %70b  Specify a specific place to put the generated file by specifying PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
+printd "this is a debug message." 0
+printd "the previous debug message should be erased by this one." 24
+
+rm -rfv dbg/* # Debugging stuff
+
+nprint() { # basically printf but with visual formatting-sensitive pretty line wrapping
+  if [[ $_NRINT_VERBOSE -eq 1 ]]; then
+    printf "nprint: init" # The debug messages will look like `nprint: ` with a short description of what is happening after that. The messages will erase themselves later when they are no longer true (like when a task finishes).
+  fi
+
+  cols=$(tput cols) # Get the width of the terminal. This information will be used repeatedly by the function in several calculations.
+
+  lines=() # Initialize an array containing each line of input. We will be looping through each individual line later.
+  while IFS= read -r line; do
+    lines+=("$line") # Read each line into the array.
+  done <<< $(printf "$@") # printf `%xyz` replacement is done before feeding text to the array. Thankfully we don't have to implement that ourselves.
+
+  for ((i = 0; i < 50; i++)); do # We will be wrapping each input line separately.
+    if [[ $_NRINT_VERBOSE -eq 1 ]]; then # If debugging is enabled, print debug messages.
+      if [[ $i -eq 0 ]]; then # 
+        jumpback=12
+      else
+        jumpback=$((13+${#i})) # `nprint: line ` is 13 characters long, plus the length of the number, indicates how far we have to jump back to fully erase the debug message.
+        printf "\e[${jumpback}Dnprint: line $i" # Jump back a certain number of characters to overwrite the existing debug message with a new one.
+      fi
+    fi
+
+    jumpback=$((27+${#i})) # Calculate how far we have to jump back to erase the previous debug message
+    printf "\e[${jumpback}Dnprint: done wrapping line $i"
+  done
+}
+
+# nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
+# To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
+# \033[4mGeneral options:\033[0m
+#   %-51b  display this help page
+#   %-51b  display the version number of the script (${scriptversion})
+#   %-31b  do not use ANSI formatting in standard output (automatically disabled if not writing to tty)
+#   %-27b  display the documentation for \033[38;2;57;255;60mproject.json\033[0m (which is used to \033[38;2;48;255;255mconfigure\033[0m projects created with np) also note that there are a few \033[38;2;45;45;255mchanges\033[0m and there are some even more existential crisis and there is world hunger and the \033[38;2;34;34;34mworld\033[0m is about to and and i really need to get this line to about 321 characters not including the linux subshells and some other strange Rust-based \033[38;2;56;255;255mapplications\033[0m
+#   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
+#   %70b  Specify a specific place to put the generated file by specifying PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-d \033[38;2;225;225;225m|\033[0m --\033[4md\033[0mocumentation" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
 
 # nprint "\033[1mnp ${scriptversion}\033[0m is a C/C++ build system. Our Git repository is located at \033[3m\033[38;2;145;203;255mhttps://github.com/HackerDaGreat57/np\033[0m.
 # To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedicated directory, and then edit \033[38;2;57;255;60m.np/project.json\033[0m to include details about your project.\n
@@ -137,7 +75,7 @@ To create a new project, just run \033[38;2;128;255;57mnp\033[0m inside a dedica
 #   %-27b  create a new \033[38;2;241;255;71m~/.config/np/defaults.json\033[0m (overwrites if already existing)
 #   %70b  Specify a specific place to put the generated file by typing PATH" "-h \033[38;2;225;225;225m|\033[0m --\033[4mh\033[0melp" "-v \033[38;2;225;225;225m|\033[0m --\033[4mv\033[0mersion" "-f \033[38;2;225;225;225m|\033[0m --no-\033[4mf\033[0mormatting" "-m | --\033[4mm\033[0make-defaults" "\033[38;2;125;125;125m└─\033[0m\033[38;2;225;225;225m[PATH]\033[0m"
 
-printf "
-this is a line and "
+# printf "
+# this is a line and "
 
 #nprint "i hope that the debug messages will not cause the last part to disappear because that would be a shame and i would need to make a million tiktok videos about it!"

@@ -1,8 +1,6 @@
 # np
 
-np is a build system for C/C++, made from scratch in Bash.
-
-Currently the project is in very early development. The speed of development of this project is variable, as it's influenced by my fluctuating amount of free time. But I'll hit the afterburners during mostly July 29 - August 15, as I will have practically nothing else to do during that time.
+np is a build system for C/C++, made from scratch in Bash. Currently it is in a completely unusable state, but slowly developing, and you should watch or star this repository for updates.
 
 ## As of July 16, the Git commit history is very messy.
 
