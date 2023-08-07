@@ -15,7 +15,8 @@ printd() { # Debug message printing utility
       ;;
 
     1) # Print debug messages and keep them visible until processing has finished.
-       printf "\e[${2}D${1}"
+       #printf "\e[${2}D${1}"
+       printf "\e[${2}D\e[0K${1}"
       ;;
 
     2) # Print debug messages and don't erase them
@@ -25,7 +26,16 @@ printd() { # Debug message printing utility
 }
 
 printd "this is a debug message." 0
+sleep 1
 printd "the previous debug message should be erased by this one." 24
+sleep 1
+for ((i = 0; i < 999999; i++)); do
+  if [[ i -eq 0 ]]; then
+    printd "okay, i = $i" 56
+  else
+    printd "okay, i = $i" $((10+${#i}))
+  fi
+done
 
 rm -rfv dbg/* # Debugging stuff
 
