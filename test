@@ -3,7 +3,10 @@
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-_NRINT_VERBOSE=1 # If this is 1, the function will print small temporary messages to indicate what it is processing at any given point in time. Useful for impatient people (like me) who calm down after being assured that the task will eventually finish at some point, not crash entirely. When it is equal to 2, it does not automatically erase debug messages.
+_NRINT_VERBOSE=2 # Value table:
+                 # 0. Doesn't print any debug messages at all.
+                 # 1. Prints debug messages, then briefly deletes them after processing of the debug message's corresponding action has finished.
+                 # 2. Prints debug messages and a trailing newline. Does not remove outdated messages.
 
 printd() { # Debug message printing utility
   # Takes 2 arguments:
