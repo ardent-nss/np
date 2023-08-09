@@ -45,12 +45,15 @@ printd() { # Debug message printing utility
     2) # Print debug messages and don't erase them.
        printf "$1\n"
       ;;
+
+    *) # If the user didn't specify if we should print debug messages, just don't.
+      ;;
   esac
 
   last_msg_len=${#1}
 }
 
-printf "this is a long message which i sincerely hope somebody will find someday far in the future and this is complete gibberish nobody understands. lorem ipsum dolor shit amet blah blah blah, o hope you have a terriblw day, noe gwt bnack to farming corn or i will cut your pay by one thousand dollars and get"
+printf "this is a long message which i sincerely hope somebody will find someday far in the future and this is complete gibberish nobody understands. glub glub glub lorem ipsum dolor shit amet blah blah blah, o hope you have a terriblw day, noe gwt bnack to farming corn or i will cut your pay by one thousand dollars and get"
 sleep 1
 printd "uncomplementary debug message"
 sleep 1
