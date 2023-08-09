@@ -2,9 +2,9 @@
 
 np is a build system for C/C++, made from scratch in Bash. Currently it is in a completely unusable state, but slowly developing, and you should watch or star this repository for updates.
 
-## As of July 16, the Git commit history is very messy.
+## As of August 8, the Git commit history is very messy.
 
-Please literally bear with me here, as I don't have the mental capacity to come up with a productive commit message when I *just* need to mark a point in development. I promise I will clean this up later.
+Please bear with me here, as I don't have the mental capacity to come up with a productive commit message when I *just* need to mark a point in development. I promise I will clean this up later.
 
 ## Features/goals
 

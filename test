@@ -31,11 +31,6 @@ printd() { # Debug message printing utility
 
   echo $col > dbg/col
   echo $row > dbg/row
-  #echo $last_msg_len > dbg/lml${last_msg_len}
-  # if [ -n "$last_msg_len" ]; then
-  #   last_msg_len=0
-  #   echo "lml was 0"
-  # fi
 
   echo $last_msg_len > dbg/lml${last_msg_len}
 
