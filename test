@@ -1,9 +1,10 @@
 #!/bin/bash
 
+rm -rfv dbg/* # Debugging stuff
 noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
-_NRINT_VERBOSE=2 # Value table:
+_NPRINT_VERBOSE=1 # Value table:
                  # 0. Doesn't print any debug messages at all.
                  # 1. Prints debug messages, then briefly deletes them after processing of the debug message's corresponding action has finished.
                  # 2. Prints debug messages and a trailing newline. Does not remove outdated messages.
@@ -11,42 +12,64 @@ _NRINT_VERBOSE=2 # Value table:
 printd() { # Debug message printing utility
   # Takes 2 arguments:
   #  $1: the debug message string
-  #  $2: the length of the previous debug message to erase, if applicable
+  #  $2: the length of the previous debug message to erase; if not applicable or is the first message, set to 0
 
-  case $_NRINT_VERBOSE in
+  exec < /dev/tty
+  oldstty=$(stty -g)
+  stty raw -echo min 0
+  echo -en "\033[6n" > /dev/tty
+  # tput u7 > /dev/tty    # when TERM=xterm (and relatives)
+  IFS=';' read -r -d R -a pos
+  stty $oldstty
+  row=$((${pos[0]:2} - 1))
+  col=$((${pos[1]} - 1))
+  width=$(tput cols)
+  if [[ ${#1} -gt $(($width-$col)) ]]; then
+    return 1
+  fi
+
+  echo $col > dbg/col
+  echo $row > dbg/row
+
+  if [ -n "$last_msg_len" ]; then
+    last_msg_len=0
+  fi
+
+  echo $last_msg_len > dbg/lml${last_msg_len}
+
+  case $_NPRINT_VERBOSE in # What exactly we need to do depends on the value of _NPRINT_VERBOSE.
     0) # Don't print debug messages at all.
       ;;
 
     1) # Print debug messages and keep them visible until processing has finished.
-       #printf "\e[${2}D${1}"
-       printf "\e[${2}D\e[0K${1}"
+       printf "\e[${last_msg_len}D\e[0K${1}"
       ;;
 
-    2) # Print debug messages and don't erase them
+    2) # Print debug messages and don't erase them.
        printf "$1\n"
       ;;
   esac
+
+  last_msg_len=${#1}
 }
 
-printd "this is a debug message." 0
+printf "this is a long message which i sincerely hope somebody will find someday far in the future and this is complete gibberish nobody understands. lorem ipsum dolor shit amet blah blah blah, o hope you have a terriblw day, noe gwt bnack to farming corn or i will cut your pay by one thousand dollars and get"
 sleep 1
-printd "the previous debug message should be erased by this one." 24
+printd "uncomplementary debug message"
 sleep 1
-for ((i = 0; i < 999999; i++)); do
-  if [[ i -eq 0 ]]; then
-    printd "okay, i = $i" 56
-  else
-    printd "okay, i = $i" $((10+${#i}))
-  fi
-done
+printd "this is anbother"
+sleep 1
+printd "and an"
 
-rm -rfv dbg/* # Debugging stuff
+# dbg1="debug message"
+# printf "$dbg1"
+# sleep 1
+# tput cub ${#dbg1}
+# printf "a"
+#printf "happy days"
 
 nprint() { # basically printf but with visual formatting-sensitive pretty line wrapping
-  if [[ $_NRINT_VERBOSE -eq 1 ]]; then
-    printf "nprint: init" # The debug messages will look like `nprint: ` with a short description of what is happening after that. The messages will erase themselves later when they are no longer true (like when a task finishes).
-  fi
-
+  printd "nprint: init" # The debug messages will look like `nprint: ` with a short description of what is happening after that. The messages will erase themselves later when they are no longer true (like when a task finishes).
   cols=$(tput cols) # Get the width of the terminal. This information will be used repeatedly by the function in several calculations.
 
   lines=() # Initialize an array containing each line of input. We will be looping through each individual line later.
@@ -55,7 +78,7 @@ nprint() { # basically printf but with visual formatting-sensitive pretty line w
   done <<< $(printf "$@") # printf `%xyz` replacement is done before feeding text to the array. Thankfully we don't have to implement that ourselves.
 
   for ((i = 0; i < 50; i++)); do # We will be wrapping each input line separately.
-    if [[ $_NRINT_VERBOSE -eq 1 ]]; then # If debugging is enabled, print debug messages.
+    if [[ $_NPRINT_VERBOSE -eq 1 ]]; then # If debugging is enabled, print debug messages.
       if [[ $i -eq 0 ]]; then # 
         jumpback=12
       else
