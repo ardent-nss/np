@@ -9,6 +9,7 @@ _NPRINT_VERBOSE=1 # Value table:
                  # 1. Prints debug messages, then briefly deletes them after processing of the debug message's corresponding action has finished.
                  # 2. Prints debug messages and a trailing newline. Does not remove outdated messages.
 
+last_msg_len=0
 printd() { # Debug message printing utility
   # Takes 2 arguments:
   #  $1: the debug message string
@@ -30,10 +31,11 @@ printd() { # Debug message printing utility
 
   echo $col > dbg/col
   echo $row > dbg/row
-
-  if [ -n "$last_msg_len" ]; then
-    last_msg_len=0
-  fi
+  #echo $last_msg_len > dbg/lml${last_msg_len}
+  # if [ -n "$last_msg_len" ]; then
+  #   last_msg_len=0
+  #   echo "lml was 0"
+  # fi
 
   echo $last_msg_len > dbg/lml${last_msg_len}
 
