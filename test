@@ -5,27 +5,31 @@ noformat=0 # Just for compatibility
 scriptversion=0.0.1.0
 
 _NPRINT_VERBOSE=1 # Value table:
-                 # 0. Doesn't print any debug messages at all.
-                 # 1. Prints debug messages, then briefly deletes them after processing of the debug message's corresponding action has finished.
-                 # 2. Prints debug messages and a trailing newline. Does not remove outdated messages.
+                  # 0. Doesn't print any debug messages at all.
+                  # 1. Prints debug messages, then briefly deletes them after processing of the debug message's corresponding action has finished.
+                  #      Note: "processing finishes" when the next debug message is printed. It's therefore up to the developer to decide when the processing that a certain debug message is talking about has finished.
+                  # 2. Prints debug messages and a trailing newline. Does not remove outdated messages.
 
 last_msg_len=0
 printd() { # Debug message printing utility
   # Takes 2 arguments:
   #  $1: the debug message string
-  #  $2: the length of the previous debug message to erase; if not applicable or is the first message, set to 0
+  #  $2: (opt) if equal to 1, resets last message length variable.
+
+  if [[ $2 -eq 1 ]]; then
+    last_msg_len=0
+  fi
 
   exec < /dev/tty
   oldstty=$(stty -g)
   stty raw -echo min 0
   echo -en "\033[6n" > /dev/tty
-  # tput u7 > /dev/tty    # when TERM=xterm (and relatives)
   IFS=';' read -r -d R -a pos
   stty $oldstty
   row=$((${pos[0]:2} - 1))
   col=$((${pos[1]} - 1))
   width=$(tput cols)
-  if [[ ${#1} -gt $(($width-$col)) ]]; then
+  if [[ ${#1} -ge $(($width-$col)) ]]; then
     return 1
   fi
 
@@ -39,7 +43,11 @@ printd() { # Debug message printing utility
       ;;
 
     1) # Print debug messages and keep them visible until processing has finished.
-       printf "\e[${last_msg_len}D\e[0K${1}"
+       if [[ $last_msg_len -eq 0 ]]; then
+         printf "${1}"
+       else
+         printf "\e[${last_msg_len}D\e[0K${1}"
+       fi
       ;;
 
     2) # Print debug messages and don't erase them.
@@ -53,20 +61,18 @@ printd() { # Debug message printing utility
   last_msg_len=${#1}
 }
 
-printf "this is a long message which i sincerely hope somebody will find someday far in the future and this is complete gibberish nobody understands. glub glub glub lorem ipsum dolor shit amet blah blah blah, o hope you have a terriblw day, noe gwt bnack to farming corn or i will cut your pay by one thousand dollars and get"
+printf "performing military missile ballistics calculations..."
+printd "setting up trajectory..."
 sleep 1
-printd "uncomplementary debug message"
+printd "warming up..."
 sleep 1
-printd "this is anbother"
+printd "launching missile..."
 sleep 1
-printd "and an"
+printd "uh oh..."
+sleep 1
+printd "KABLAM!!"
 
-# dbg1="debug message"
-# printf "$dbg1"
-# sleep 1
-# tput cub ${#dbg1}
-# printf "a"
-#printf "happy days"
+printd "calculations complete." 1
 
 nprint() { # basically printf but with visual formatting-sensitive pretty line wrapping
   printd "nprint: init" # The debug messages will look like `nprint: ` with a short description of what is happening after that. The messages will erase themselves later when they are no longer true (like when a task finishes).
@@ -75,7 +81,7 @@ nprint() { # basically printf but with visual formatting-sensitive pretty line w
   lines=() # Initialize an array containing each line of input. We will be looping through each individual line later.
   while IFS= read -r line; do
     lines+=("$line") # Read each line into the array.
-  done <<< $(printf "$@") # printf `%xyz` replacement is done before feeding text to the array. Thankfully we don't have to implement that ourselves.
+  done <<< $(printf "$@") # printf `%xyz` replacement is done before feeding text to the array, so thankfully we don't have to implement that ourselves.
 
   for ((i = 0; i < 50; i++)); do # We will be wrapping each input line separately.
     if [[ $_NPRINT_VERBOSE -eq 1 ]]; then # If debugging is enabled, print debug messages.
